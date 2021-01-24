@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CardController : MonoBehaviour
 {
-    public CardAbility Ability;
+    public CardAbility AbilityController;
     public Card Card;
     public bool IsPlayerCard;
     public CardInfoScript Info;
@@ -18,8 +18,8 @@ public class CardController : MonoBehaviour
         Card = card;
         GameManager = GameManagerScr.Instance;
         IsPlayerCard = isPlayerCard;
-        Ability.Shield.SetActive(false);
-        Ability.Provocation.SetActive(false);
+        AbilityController.Shield.SetActive(false);
+        AbilityController.Provocation.SetActive(false);
 
         if(isPlayerCard)
         {
@@ -50,7 +50,7 @@ public class CardController : MonoBehaviour
         }
 
         Card.IsPlaced = true;
-        if(Card.HasAbility) Ability.OnCast();
+        if(Card.HasAbility) AbilityController.OnCast();
         if(Card.IsSpell) UseSpell(null);
         UIController.Instance.UpdateResources();
     }
@@ -58,7 +58,7 @@ public class CardController : MonoBehaviour
     public void OnTakeDamage(CardController attacker = null)
     {
         CheckIfAlive();
-        Ability.OnTakeDamage(attacker);
+        AbilityController.OnTakeDamage(attacker);
     }
 
     public void OnDamageDeal()
@@ -67,7 +67,7 @@ public class CardController : MonoBehaviour
         Info.CanAttack = false;
         Info.HighlightCard(false);
 
-        if(Card.HasAbility) Ability.OnDamageDeal();
+        if(Card.HasAbility) AbilityController.OnDamageDeal();
     }
 
     public void UseSpell(CardController target)
@@ -132,14 +132,15 @@ public class CardController : MonoBehaviour
                 UIController.Instance.UpdateResources();
             break;
 
+
             case SpellCard.SpellType.PROVOCATION_ON_ALLY_CARD:
-                    if(!target.Card.Abilities.Exists(x => x == Card.abilityType.PROVOCATION))
-                    target.Card.Abilities.Add(Card.abilityType.PROVOCATION);
+                    if(!target.Card.Abilities.Exists(x => x.AbilityType == CardAbility.abilityType.PROVOCATION))
+                    target.Card.Abilities.Add(new CardAbility(CardAbility.abilityType.PROVOCATION));
             break;
 
             case SpellCard.SpellType.SHIELD_ON_ALLY_CARD:
-                if(!target.Card.Abilities.Exists(x => x == Card.abilityType.HOLY_SHIELD))
-                    target.Card.Abilities.Add(Card.abilityType.HOLY_SHIELD);
+                if(!target.Card.Abilities.Exists(x => x.AbilityType == CardAbility.abilityType.HOLY_SHIELD))
+                    target.Card.Abilities.Add(new CardAbility(CardAbility.abilityType.HOLY_SHIELD));
             break;
 
             case SpellCard.SpellType.DAMAGE_CARD:
@@ -157,7 +158,7 @@ public class CardController : MonoBehaviour
 
         if(target != null)
         {
-            target.Ability.OnCast();
+            target.AbilityController.OnCast();
             target.CheckIfAlive();
         }
         Debug.Log("Destroying Card");

@@ -89,7 +89,7 @@ public class GameManagerScr : MonoBehaviour
                 if(card.Card.Attack > 0 && !card.Card.Name.Contains("wall")){
                     card.Info.CanAttack = true;
                     card.Info.HighlightCard(true);
-                    card.Ability.OnNewTurn();
+                    card.AbilityController.OnNewTurn();
                 }
                 
             }
@@ -108,7 +108,7 @@ public class GameManagerScr : MonoBehaviour
             foreach (var card in EnemyFieldCards)
             {
                 if(card.Card.Attack > 0 && !card.Card.Name.Contains("wall")) card.Info.CanAttack = true;
-                card.Ability.OnNewTurn();
+                card.AbilityController.OnNewTurn();
             }
 
             EnemyAI.MakeTurn();

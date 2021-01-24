@@ -4,36 +4,60 @@ using UnityEngine;
 
 public class CardAbility : MonoBehaviour
 {
+    public enum abilityType 
+    {
+        NO_ABILITY,
+        INSTANT_ACTIVE,
+        DOUBLE_ATTACK,
+        HOLY_SHIELD,
+        PROVOCATION,
+        REGENERATION_EACH_TURN,
+        DECREASE_ATTACK_ON_ATTACK,
+        RANGED,
+        GOLD_REGENERATION,
+        MANA_REGENERATION,
+        HERO_REGENERATION,
+        DAMAGE_ON_CAST,
+        DAMAGE_EACH_TURN_SMALL
+    }
 
     public CardController CardController;
     public GameObject Shield, Provocation;
+    public int AbilityValue;
+    public abilityType AbilityType;
+
+    public CardAbility(abilityType ability, int abilityValue = 0)
+    {
+        AbilityType = ability;
+        AbilityValue = abilityValue;
+    }
 
     public void OnCast()
     {
         foreach (var ability in CardController.Card.Abilities)
         {
-            switch (ability)
+            switch (ability.AbilityType)
             {
-                case Card.abilityType.INSTANT_ACTIVE:
+                case abilityType.INSTANT_ACTIVE:
                     CardController.Info.CanAttack = true;
                     if(CardController.IsPlayerCard) CardController.Info.HighlightCard(true);
                 break;
 
-                case Card.abilityType.HOLY_SHIELD:
+                case abilityType.HOLY_SHIELD:
                     Shield.SetActive(true);
                 break;
 
-                case Card.abilityType.PROVOCATION:
+                case abilityType.PROVOCATION:
                     Provocation.SetActive(true);
                 break;
 
-                case Card.abilityType.DAMAGE_ON_CAST:
+                case abilityType.DAMAGE_ON_CAST:
                     if(CardController.IsPlayerCard && GameManagerScr.Instance.EnemyFieldCards.Count > 0)
                     {
                         for (int i = GameManagerScr.Instance.EnemyFieldCards.Count - 1; i >= 0; i--)
                         {
                             Debug.Log("Damage to " + GameManagerScr.Instance.EnemyFieldCards[i].name);
-                            CardController.GiveDamageTo(GameManagerScr.Instance.EnemyFieldCards[i], 2);
+                            CardController.GiveDamageTo(GameManagerScr.Instance.EnemyFieldCards[i], ability.AbilityValue);
                             
                         }
                     }
@@ -42,7 +66,7 @@ public class CardAbility : MonoBehaviour
                         for (int i = GameManagerScr.Instance.PlayerFieldCards.Count - 1; i >= 0; i--)
                         {
                             Debug.Log("Damage to " + GameManagerScr.Instance.EnemyFieldCards[i].name);
-                            CardController.GiveDamageTo(GameManagerScr.Instance.PlayerFieldCards[i], 2);
+                            CardController.GiveDamageTo(GameManagerScr.Instance.PlayerFieldCards[i], ability.AbilityValue);
                             
                         }
                     } 
@@ -57,9 +81,9 @@ public class CardAbility : MonoBehaviour
     {
         foreach (var ability in CardController.Card.Abilities)
         {
-            switch (ability)
+            switch (ability.AbilityType)
             {
-                case Card.abilityType.DOUBLE_ATTACK:
+                case abilityType.DOUBLE_ATTACK:
                     if(CardController.Card.TimesDealDamage == 1)
                     {
                         CardController.Info.CanAttack = true;
@@ -78,13 +102,13 @@ public class CardAbility : MonoBehaviour
         Shield.SetActive(false);
         foreach (var ability in CardController.Card.Abilities)
         {
-            switch (ability)
+            switch (ability.AbilityType)
             {
-                case Card.abilityType.HOLY_SHIELD:
+                case abilityType.HOLY_SHIELD:
                     Shield.SetActive(true);
                 break;
                 
-                case Card.abilityType.DECREASE_ATTACK_ON_ATTACK:
+                case abilityType.DECREASE_ATTACK_ON_ATTACK:
                     if(attacker != null) attacker.Card.Attack--;
                 break;
                 
@@ -99,41 +123,26 @@ public class CardAbility : MonoBehaviour
         CardController.Card.TimesTookDamage = 0;
         foreach (var ability in CardController.Card.Abilities)
         {
-            switch (ability)
+            switch (ability.AbilityType)
             {
-                case Card.abilityType.REGENERATION_EACH_TURN_BASIC:
-                    if(CardController.Card.Defense < CardController.Card.MaxDefense) CardController.Card.Defense = Mathf.Min(CardController.Card.Defense+1, CardController.Card.MaxDefense);
+                case abilityType.REGENERATION_EACH_TURN:
+                    if(CardController.Card.Defense < CardController.Card.MaxDefense) CardController.Card.Defense = Mathf.Min(CardController.Card.Defense+ability.AbilityValue, CardController.Card.MaxDefense);
                     CardController.Info.Refresh();
                 break;
 
-                case Card.abilityType.REGENERATION_EACH_TURN_MODERATE:
-                    if(CardController.Card.Defense < CardController.Card.MaxDefense) CardController.Card.Defense = Mathf.Min(CardController.Card.Defense+2, CardController.Card.MaxDefense);
-                    CardController.Info.Refresh();
+                case abilityType.GOLD_REGENERATION:
+                    if(CardController.IsPlayerCard) GameManagerScr.Instance.CurrentGame.Player.Gold+=ability.AbilityValue;
+                    else GameManagerScr.Instance.CurrentGame.Enemy.Gold+=ability.AbilityValue;
                 break;
 
-                case Card.abilityType.TOLL:
-                    if(CardController.IsPlayerCard) GameManagerScr.Instance.CurrentGame.Player.Gold++;
-                    else GameManagerScr.Instance.CurrentGame.Enemy.Gold++;
+                case abilityType.MANA_REGENERATION:
+                    if(CardController.IsPlayerCard) GameManagerScr.Instance.CurrentGame.Player.Mana+=ability.AbilityValue;
+                    else GameManagerScr.Instance.CurrentGame.Enemy.Mana+=ability.AbilityValue;
                 break;
 
-                case Card.abilityType.MANA_REGENERATION_BASIC:
-                    if(CardController.IsPlayerCard) GameManagerScr.Instance.CurrentGame.Player.Mana++;
-                    else GameManagerScr.Instance.CurrentGame.Enemy.Mana++;
-                break;
-
-                case Card.abilityType.MANA_REGENERATION_MODERATE:
-                    if(CardController.IsPlayerCard) GameManagerScr.Instance.CurrentGame.Player.Mana += 2;
-                    else GameManagerScr.Instance.CurrentGame.Enemy.Mana += 2;
-                break;
-
-                case Card.abilityType.HERO_REGENERATION_BASIC:
-                    if(CardController.IsPlayerCard) GameManagerScr.Instance.CurrentGame.Player.HP++;
-                    else GameManagerScr.Instance.CurrentGame.Enemy.HP++;
-                break;
-
-                case Card.abilityType.HERO_REGENERATION_MODERATE:
-                    if(CardController.IsPlayerCard) GameManagerScr.Instance.CurrentGame.Player.HP += 2;
-                    else GameManagerScr.Instance.CurrentGame.Enemy.HP += 2;
+                case abilityType.HERO_REGENERATION:
+                    if(CardController.IsPlayerCard) GameManagerScr.Instance.CurrentGame.Player.HP+=ability.AbilityValue;
+                    else GameManagerScr.Instance.CurrentGame.Enemy.HP+=ability.AbilityValue;
                 break;
                 
                 default: break;

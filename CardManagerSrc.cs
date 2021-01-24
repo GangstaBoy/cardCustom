@@ -5,31 +5,12 @@ using UnityEngine;
 public class Card
 {
 
-    public enum abilityType 
-    {
-        NO_ABILITY,
-        INSTANT_ACTIVE,
-        DOUBLE_ATTACK,
-        HOLY_SHIELD,
-        PROVOCATION,
-        REGENERATION_EACH_TURN_BASIC,
-        REGENERATION_EACH_TURN_MODERATE,
-        DECREASE_ATTACK_ON_ATTACK,
-        RANGED,
-        TOLL,
-        MANA_REGENERATION_BASIC,
-        HERO_REGENERATION_BASIC,
-        MANA_REGENERATION_MODERATE,
-        HERO_REGENERATION_MODERATE,
-        DAMAGE_ON_CAST,
-        DAMAGE_EACH_TURN_SMALL
-    }
     public string Name;
     public Sprite Logo;
     public int Attack, Defense, Manacost, Goldcost, MaxDefense;
     public bool IsPlaced;
 
-    public List<abilityType> Abilities;
+    public List<CardAbility> Abilities;
 
     public bool IsSpell;
     public bool IsAlive
@@ -52,20 +33,20 @@ public class Card
     {
         get
         {
-            return Abilities.Exists(x => x == abilityType.PROVOCATION );
+            return Abilities.Exists(x => x.AbilityType == CardAbility.abilityType.PROVOCATION );
         }
     }
     public bool Ranged
     {
         get
         {
-            return Abilities.Exists(x => x == abilityType.RANGED);
+            return Abilities.Exists(x => x.AbilityType == CardAbility.abilityType.RANGED);
         }
     }
     public int TimesTookDamage;
     public int TimesDealDamage;
     public Card(string name, string logoPath, int attack, int defense, int manacost, int goldcost,
-                List<abilityType> abilities)
+                List<CardAbility> abilities)
     {
         Name = name;
         Logo = Resources.Load<Sprite>(logoPath);
@@ -76,7 +57,7 @@ public class Card
         IsPlaced = false;
         TimesDealDamage = TimesTookDamage = 0;
 
-        Abilities = new List<abilityType>();
+        Abilities = new List<CardAbility>();
 
         if(abilities != null || abilities.Count > 0)
         {
@@ -97,7 +78,7 @@ public class Card
         IsPlaced = false;
         TimesDealDamage = TimesTookDamage = 0;
 
-        Abilities = new List<abilityType>();
+        Abilities = new List<CardAbility>();
 
         if(card.Abilities != null || card.Abilities.Count > 0)
         {
@@ -112,7 +93,7 @@ public class Card
     {
         if (damage > 0) 
         {
-            if(Abilities.Exists(x => x == abilityType.HOLY_SHIELD)) Abilities.Remove(abilityType.HOLY_SHIELD);
+            if(Abilities.Exists(x => x.AbilityType == CardAbility.abilityType.HOLY_SHIELD)) Abilities.Remove(Abilities.Find(x => x.AbilityType == CardAbility.abilityType.HOLY_SHIELD));
             else Defense -= damage;
         }
     }
@@ -151,7 +132,7 @@ public class SpellCard : Card {
     public int SpellValue;
 
     public SpellCard(string name, string logoPath, int manacost, int goldcost, SpellType spellType = 0, int spellValue = 0, TargetType targetType = 0) 
-                    : base (name, logoPath, 0, 0, manacost, goldcost, new List<abilityType>())
+                    : base (name, logoPath, 0, 0, manacost, goldcost, new List<CardAbility>())
     {
         IsSpell = true;
         Spell = spellType;
@@ -184,27 +165,27 @@ public class CardManagerSrc : MonoBehaviour
 
     public void Awake()
     {
-        CardManager.AllCards.Add(new Card("peasant", "Sprites/Cards/peasant", 1, 4, 0, 2, new List<Card.abilityType> {Card.abilityType.TOLL}));
-        CardManager.AllCards.Add(new Card("witch", "Sprites/Cards/witch", 2, 5, 0, 3, new List<Card.abilityType> {Card.abilityType.MANA_REGENERATION_BASIC, Card.abilityType.RANGED}));
-        CardManager.AllCards.Add(new Card("ancient keeper", "Sprites/Cards/ancient-keeper", 3, 17, 5, 12, new List<Card.abilityType> {Card.abilityType.HERO_REGENERATION_MODERATE, Card.abilityType.MANA_REGENERATION_MODERATE}));
-        CardManager.AllCards.Add(new Card("wolf", "Sprites/Cards/wolf", 3, 3, 0, 3, new List<Card.abilityType> {Card.abilityType.INSTANT_ACTIVE, Card.abilityType.REGENERATION_EACH_TURN_BASIC}));
-        CardManager.AllCards.Add(new Card("alfa wolf", "Sprites/Cards/alfa-wolf", 4, 8, 0, 9, new List<Card.abilityType> {Card.abilityType.INSTANT_ACTIVE, Card.abilityType.REGENERATION_EACH_TURN_BASIC, Card.abilityType.DAMAGE_ON_CAST}));
-        CardManager.AllCards.Add(new Card("feral wolf", "Sprites/Cards/feral-wolf", 3, 1, 1, 0, new List<Card.abilityType> {Card.abilityType.INSTANT_ACTIVE}));
-        CardManager.AllCards.Add(new Card("peasant archer", "Sprites/Cards/archer-peasant", 1, 4, 0, 3, new List<Card.abilityType> {Card.abilityType.RANGED, Card.abilityType.TOLL}));
-        CardManager.AllCards.Add(new Card("scarecrow", "Sprites/Cards/scarecrow", 0, 6, 0, 1, new List<Card.abilityType> {Card.abilityType.PROVOCATION}));
-        CardManager.AllCards.Add(new Card("warden", "Sprites/Cards/warden", 5, 6, 0, 5, new List<Card.abilityType> {Card.abilityType.REGENERATION_EACH_TURN_BASIC}));
-        CardManager.AllCards.Add(new Card("hunter archer", "Sprites/Cards/archer-hunter", 2, 5, 0, 5, new List<Card.abilityType> {Card.abilityType.RANGED, Card.abilityType.INSTANT_ACTIVE}));
-        CardManager.AllCards.Add(new Card("assasin archer", "Sprites/Cards/archer-assasin", 5, 9, 0, 10, new List<Card.abilityType> {Card.abilityType.RANGED}));
-        CardManager.AllCards.Add(new Card("soldier archer", "Sprites/Cards/archer-soldier", 3, 6, 0, 5, new List<Card.abilityType> {Card.abilityType.RANGED}));
-        CardManager.AllCards.Add(new Card("general scarlett", "Sprites/Cards/scarlet-general", 9, 13, 0, 18, new List<Card.abilityType> {Card.abilityType.DOUBLE_ATTACK}));
-        CardManager.AllCards.Add(new Card("guard commander", "Sprites/Cards/guard-commander", 7, 11, 0, 12, new List<Card.abilityType> {Card.abilityType.DECREASE_ATTACK_ON_ATTACK}));
-        CardManager.AllCards.Add(new Card("gnome warrior", "Sprites/Cards/gnome-warrior", 4, 18, 0, 13, new List<Card.abilityType> {Card.abilityType.REGENERATION_EACH_TURN_MODERATE}));
-        CardManager.AllCards.Add(new Card("crusader", "Sprites/Cards/crusader", 4, 8, 1, 7, new List<Card.abilityType> {Card.abilityType.HOLY_SHIELD}));
-        CardManager.AllCards.Add(new Card("divine mistress", "Sprites/Cards/divine-mistress", 5, 15, 3, 12, new List<Card.abilityType> {Card.abilityType.HOLY_SHIELD, Card.abilityType.HERO_REGENERATION_BASIC, Card.abilityType.REGENERATION_EACH_TURN_MODERATE, Card.abilityType.DAMAGE_ON_CAST}));
-        CardManager.AllCards.Add(new Card("crusader commander", "Sprites/Cards/crusader-commander", 6, 12, 2, 9, new List<Card.abilityType> {Card.abilityType.HOLY_SHIELD, Card.abilityType.REGENERATION_EACH_TURN_BASIC}));
-        CardManager.AllCards.Add(new Card("crusader general", "Sprites/Cards/crusader-general", 6, 20, 4, 18, new List<Card.abilityType> {Card.abilityType.HOLY_SHIELD, Card.abilityType.REGENERATION_EACH_TURN_MODERATE, Card.abilityType.PROVOCATION, Card.abilityType.DECREASE_ATTACK_ON_ATTACK}));
-        CardManager.AllCards.Add(new Card("guild assasin", "Sprites/Cards/guild-assasin", 7, 1, 0, 6, new List<Card.abilityType> {Card.abilityType.INSTANT_ACTIVE, Card.abilityType.DAMAGE_ON_CAST, Card.abilityType.HOLY_SHIELD}));
-        // CardManager.AllCards.Add(new Card("wild werewolf", "Sprites/Cards/wild-werewolf", 4, 7, 0, 5, new List<Card.abilityType> {Card.abilityType.INSTANT_ACTIVE, Card.abilityType.REGENERATION_EACH_TURN_BASIC, Card.abilityType.DECREASE_ATTACK_ON_ATTACK}));
+        CardManager.AllCards.Add(new Card("peasant", "Sprites/Cards/peasant", 1, 4, 0, 2, new List<CardAbility> {new CardAbility(CardAbility.abilityType.GOLD_REGENERATION, 1)}));
+        CardManager.AllCards.Add(new Card("witch", "Sprites/Cards/witch", 2, 5, 0, 3, new List<CardAbility> {new CardAbility(CardAbility.abilityType.MANA_REGENERATION, 1), new CardAbility(CardAbility.abilityType.RANGED)}));
+        CardManager.AllCards.Add(new Card("ancient keeper", "Sprites/Cards/ancient-keeper", 3, 17, 5, 12, new List<CardAbility> {new CardAbility(CardAbility.abilityType.HERO_REGENERATION, 2), new CardAbility(CardAbility.abilityType.MANA_REGENERATION, 2)}));
+        CardManager.AllCards.Add(new Card("wolf", "Sprites/Cards/wolf", 3, 3, 0, 3, new List<CardAbility> {new CardAbility(CardAbility.abilityType.INSTANT_ACTIVE), new CardAbility(CardAbility.abilityType.REGENERATION_EACH_TURN, 1)}));
+        CardManager.AllCards.Add(new Card("alfa wolf", "Sprites/Cards/alfa-wolf", 4, 8, 0, 9, new List<CardAbility> {new CardAbility(CardAbility.abilityType.INSTANT_ACTIVE), new CardAbility(CardAbility.abilityType.REGENERATION_EACH_TURN, 1), new CardAbility(CardAbility.abilityType.DAMAGE_ON_CAST, 2)}));
+        CardManager.AllCards.Add(new Card("feral wolf", "Sprites/Cards/feral-wolf", 3, 1, 1, 0, new List<CardAbility> {new CardAbility(CardAbility.abilityType.INSTANT_ACTIVE)}));
+        CardManager.AllCards.Add(new Card("peasant archer", "Sprites/Cards/archer-peasant", 1, 4, 0, 3, new List<CardAbility> {new CardAbility(CardAbility.abilityType.RANGED), new CardAbility(CardAbility.abilityType.GOLD_REGENERATION, 1)}));
+        CardManager.AllCards.Add(new Card("scarecrow", "Sprites/Cards/scarecrow", 0, 6, 0, 1, new List<CardAbility> {new CardAbility(CardAbility.abilityType.PROVOCATION)}));
+        CardManager.AllCards.Add(new Card("warden", "Sprites/Cards/warden", 5, 6, 0, 5, new List<CardAbility> {new CardAbility(CardAbility.abilityType.REGENERATION_EACH_TURN, 1)}));
+        CardManager.AllCards.Add(new Card("hunter archer", "Sprites/Cards/archer-hunter", 2, 5, 0, 5, new List<CardAbility> {new CardAbility(CardAbility.abilityType.RANGED), new CardAbility(CardAbility.abilityType.INSTANT_ACTIVE)}));
+        CardManager.AllCards.Add(new Card("assasin archer", "Sprites/Cards/archer-assasin", 5, 9, 0, 10, new List<CardAbility> {new CardAbility(CardAbility.abilityType.RANGED)}));
+        CardManager.AllCards.Add(new Card("soldier archer", "Sprites/Cards/archer-soldier", 3, 6, 0, 5, new List<CardAbility> {new CardAbility(CardAbility.abilityType.RANGED)}));
+        CardManager.AllCards.Add(new Card("general scarlett", "Sprites/Cards/scarlet-general", 9, 13, 0, 18, new List<CardAbility> {new CardAbility(CardAbility.abilityType.DOUBLE_ATTACK)}));
+        CardManager.AllCards.Add(new Card("guard commander", "Sprites/Cards/guard-commander", 7, 11, 0, 12, new List<CardAbility> {new CardAbility(CardAbility.abilityType.DECREASE_ATTACK_ON_ATTACK)}));
+        CardManager.AllCards.Add(new Card("gnome warrior", "Sprites/Cards/gnome-warrior", 4, 18, 0, 13, new List<CardAbility> {new CardAbility(CardAbility.abilityType.REGENERATION_EACH_TURN, 1)}));
+        CardManager.AllCards.Add(new Card("crusader", "Sprites/Cards/crusader", 4, 8, 1, 7, new List<CardAbility> {new CardAbility(CardAbility.abilityType.HOLY_SHIELD)}));
+        CardManager.AllCards.Add(new Card("divine mistress", "Sprites/Cards/divine-mistress", 5, 15, 3, 12, new List<CardAbility> {new CardAbility(CardAbility.abilityType.HOLY_SHIELD), new CardAbility(CardAbility.abilityType.HERO_REGENERATION, 2), new CardAbility(CardAbility.abilityType.REGENERATION_EACH_TURN, 1), new CardAbility(CardAbility.abilityType.DAMAGE_ON_CAST, 3)}));
+        CardManager.AllCards.Add(new Card("crusader commander", "Sprites/Cards/crusader-commander", 6, 12, 2, 9, new List<CardAbility> {new CardAbility(CardAbility.abilityType.HOLY_SHIELD), new CardAbility(CardAbility.abilityType.REGENERATION_EACH_TURN, 1)}));
+        CardManager.AllCards.Add(new Card("crusader general", "Sprites/Cards/crusader-general", 6, 20, 4, 18, new List<CardAbility> {new CardAbility(CardAbility.abilityType.HOLY_SHIELD), new CardAbility(CardAbility.abilityType.REGENERATION_EACH_TURN, 1), new CardAbility(CardAbility.abilityType.PROVOCATION), new CardAbility(CardAbility.abilityType.DECREASE_ATTACK_ON_ATTACK)}));
+        CardManager.AllCards.Add(new Card("guild assasin", "Sprites/Cards/guild-assasin", 7, 1, 0, 6, new List<CardAbility> {new CardAbility(CardAbility.abilityType.INSTANT_ACTIVE), new CardAbility(CardAbility.abilityType.DAMAGE_ON_CAST, 1), new CardAbility(CardAbility.abilityType.HOLY_SHIELD)}));
+        // CardManager.AllCards.Add(new Card("wild werewolf", "Sprites/Cards/wild-werewolf", 4, 7, 0, 5, new List<CardAbility> {new CardAbility(CardAbility.abilityType.INSTANT_ACTIVE, new CardAbility(CardAbility.abilityType.REGENERATION_EACH_TURN, new CardAbility(CardAbility.abilityType.DECREASE_ATTACK_ON_ATTACK}));
     
 
 // SPELLS    
