@@ -5,13 +5,13 @@ public class Player
 {
     public int HP, Mana, ManaRate, Gold, GoldRate;
 
-    public Player()
+    public Player(int hp = 20, int mp = 0, int gold = 20, int goldRate = 3, int manaRate = 2)
     {
-        HP = 20;
-        Mana = 0;
-        ManaRate = 1;
-        GoldRate = 3;
-        Gold = 20;
+        HP = hp;
+        Mana = mp;
+        ManaRate = manaRate;
+        GoldRate = goldRate;
+        Gold = gold;
     }
 
     public void RestoreRoundResoures()
@@ -24,4 +24,5 @@ public class Player
     {
         HP = Mathf.Clamp(HP - damage, 0, int.MaxValue);
     }
+
 }

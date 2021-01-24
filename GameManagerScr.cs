@@ -14,8 +14,9 @@ public class Game
     {
         Player = new Player();
         Enemy = new Player();
-        GameManagerScr.Instance.EnemyDeck.RandomizeDeck(15);
-        GameManagerScr.Instance.PlayerDeck.customDeck();
+        GameManagerScr.Instance.EnemyDeck.RandomizeDeck(25);
+        GameManagerScr.Instance.PlayerDeck.RandomizeDeck(25);
+        //GameManagerScr.Instance.PlayerDeck.customDeck();
         //SpellCard card = (SpellCard)CardManager.AllCards.Find(x => x.Name == "mana potion");
         //EnemyDeck = new List<Card>{card.GetCopy(), card.GetCopy(), card.GetCopy()};
         //PlayerDeck = new List<Card>{card.GetCopy(), card.GetCopy(), card.GetCopy()};
@@ -133,11 +134,15 @@ public class GameManagerScr : MonoBehaviour
         if(IsPlayerTurn)
         {
             CurrentGame.Player.RestoreRoundResoures();
+            GameManagerScr.Instance.PlayerHero.ShowHeroGoldChangedEvent(GameManagerScr.Instance.PlayerHero, CurrentGame.Player.GoldRate);
+            GameManagerScr.Instance.PlayerHero.ShowHeroMPChangedEvent(GameManagerScr.Instance.PlayerHero, CurrentGame.Player.ManaRate);
             CheckIfCardsPlayable();
         } 
         else 
         {
             CurrentGame.Enemy.RestoreRoundResoures();
+            GameManagerScr.Instance.EnemyHero.ShowHeroGoldChangedEvent(GameManagerScr.Instance.EnemyHero, CurrentGame.Enemy.GoldRate);
+            GameManagerScr.Instance.EnemyHero.ShowHeroMPChangedEvent(GameManagerScr.Instance.EnemyHero, CurrentGame.Enemy.ManaRate);
         }
         UIController.Instance.UpdateResources();
 
@@ -153,30 +158,28 @@ public class GameManagerScr : MonoBehaviour
     public void CardsFight(CardController attacker, CardController defender)
     {
         attacker.Info.CanAttack = false;
-        defender.Card.GetDamage(attacker.Card.Attack);
+        attacker.GiveDamageTo(defender, attacker.Card.Attack);
         attacker.OnDamageDeal();
         defender.OnTakeDamage(attacker);
 
         if(!attacker.Card.Ranged) 
         {
-            attacker.Card.GetDamage(defender.Card.Attack);
+            defender.GiveDamageTo(attacker, defender.Card.Attack);
             attacker.OnTakeDamage();
         }
 
-        attacker.CheckIfAlive();
-        defender.CheckIfAlive();
-        
-
-        if(!attacker.Card.IsAlive && !IsPlayerTurn)
+        if(!defender.Card.IsAlive && !IsPlayerTurn)
         {
             CurrentGame.Enemy.Gold++;
+            GameManagerScr.Instance.EnemyHero.ShowHeroGoldChangedEvent(GameManagerScr.Instance.EnemyHero, 1);
         }
 
         if(!defender.Card.IsAlive && IsPlayerTurn)
         {
             CurrentGame.Player.Gold++;
-            
+            GameManagerScr.Instance.PlayerHero.ShowHeroGoldChangedEvent(GameManagerScr.Instance.PlayerHero, 1);
         }
+        UIController.Instance.UpdateResources();
         CheckIfCardsPlayable();
     }
 
@@ -198,8 +201,16 @@ public class GameManagerScr : MonoBehaviour
 
     public void DamageHero(CardController card, bool isEnemyAttacked)
     {
-        if(isEnemyAttacked) CurrentGame.Enemy.GetDamage(card.Card.Attack);
-        else CurrentGame.Player.GetDamage(card.Card.Attack);
+        if(isEnemyAttacked) 
+        {
+            CurrentGame.Enemy.GetDamage(card.Card.Attack);
+            EnemyHero.ShowHeroHPChangedEvent(EnemyHero, card.Card.Attack, true);
+        }
+        else 
+        {
+            CurrentGame.Player.GetDamage(card.Card.Attack);
+            PlayerHero.ShowHeroHPChangedEvent(PlayerHero, card.Card.Attack, true);
+        }
         card.OnDamageDeal();
         UIController.Instance.UpdateResources();
         CheckResult();

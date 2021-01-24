@@ -18,7 +18,8 @@ public class CardAbility : MonoBehaviour
         MANA_REGENERATION,
         HERO_REGENERATION,
         DAMAGE_ON_CAST,
-        DAMAGE_EACH_TURN_SMALL
+        DAMAGE_EACH_TURN,
+        DAMAGE_HERO_ON_CAST
     }
 
     public CardController CardController;
@@ -65,10 +66,23 @@ public class CardAbility : MonoBehaviour
                     {
                         for (int i = GameManagerScr.Instance.PlayerFieldCards.Count - 1; i >= 0; i--)
                         {
-                            Debug.Log("Damage to " + GameManagerScr.Instance.EnemyFieldCards[i].name);
+                            Debug.Log("Damage to " + GameManagerScr.Instance.PlayerFieldCards[i].name);
                             CardController.GiveDamageTo(GameManagerScr.Instance.PlayerFieldCards[i], ability.AbilityValue);
                             
                         }
+                    } 
+                    break;
+
+                case abilityType.DAMAGE_HERO_ON_CAST:
+                    if(CardController.IsPlayerCard)
+                    {
+                        GameManagerScr.Instance.CurrentGame.Enemy.GetDamage(ability.AbilityValue);
+                        GameManagerScr.Instance.EnemyHero.ShowHeroHPChangedEvent(GameManagerScr.Instance.EnemyHero, ability.AbilityValue, true);
+                    }
+                    else if(!CardController.IsPlayerCard)
+                    {
+                        GameManagerScr.Instance.CurrentGame.Player.GetDamage(ability.AbilityValue);
+                        GameManagerScr.Instance.PlayerHero.ShowHeroHPChangedEvent(GameManagerScr.Instance.PlayerHero, ability.AbilityValue, true);
                     } 
                     break;
                 
@@ -126,24 +140,66 @@ public class CardAbility : MonoBehaviour
             switch (ability.AbilityType)
             {
                 case abilityType.REGENERATION_EACH_TURN:
-                    if(CardController.Card.Defense < CardController.Card.MaxDefense) CardController.Card.Defense = Mathf.Min(CardController.Card.Defense+ability.AbilityValue, CardController.Card.MaxDefense);
-                    CardController.Info.Refresh();
+                    CardController.RegenCardHP(CardController, ability.AbilityValue);
                 break;
 
                 case abilityType.GOLD_REGENERATION:
-                    if(CardController.IsPlayerCard) GameManagerScr.Instance.CurrentGame.Player.Gold+=ability.AbilityValue;
-                    else GameManagerScr.Instance.CurrentGame.Enemy.Gold+=ability.AbilityValue;
+                    if(CardController.IsPlayerCard) 
+                    {
+                        GameManagerScr.Instance.CurrentGame.Player.Gold+=ability.AbilityValue;
+                        GameManagerScr.Instance.PlayerHero.ShowHeroGoldChangedEvent(GameManagerScr.Instance.PlayerHero, ability.AbilityValue);
+                    }
+                    else 
+                    {
+                        GameManagerScr.Instance.CurrentGame.Enemy.Gold+=ability.AbilityValue;
+                        GameManagerScr.Instance.EnemyHero.ShowHeroGoldChangedEvent(GameManagerScr.Instance.EnemyHero, ability.AbilityValue);
+                    }
                 break;
 
                 case abilityType.MANA_REGENERATION:
-                    if(CardController.IsPlayerCard) GameManagerScr.Instance.CurrentGame.Player.Mana+=ability.AbilityValue;
-                    else GameManagerScr.Instance.CurrentGame.Enemy.Mana+=ability.AbilityValue;
+                    if(CardController.IsPlayerCard) 
+                    {
+                        GameManagerScr.Instance.CurrentGame.Player.Mana+=ability.AbilityValue;
+                        GameManagerScr.Instance.PlayerHero.ShowHeroMPChangedEvent(GameManagerScr.Instance.PlayerHero, ability.AbilityValue);
+                    }
+                    else 
+                    {
+                        GameManagerScr.Instance.CurrentGame.Enemy.Mana+=ability.AbilityValue;
+                        GameManagerScr.Instance.EnemyHero.ShowHeroMPChangedEvent(GameManagerScr.Instance.EnemyHero, ability.AbilityValue);
+                    }
                 break;
 
                 case abilityType.HERO_REGENERATION:
-                    if(CardController.IsPlayerCard) GameManagerScr.Instance.CurrentGame.Player.HP+=ability.AbilityValue;
-                    else GameManagerScr.Instance.CurrentGame.Enemy.HP+=ability.AbilityValue;
+                    if(CardController.IsPlayerCard) 
+                    {
+                        GameManagerScr.Instance.CurrentGame.Player.HP+=ability.AbilityValue;
+                        GameManagerScr.Instance.PlayerHero.ShowHeroHPChangedEvent(GameManagerScr.Instance.PlayerHero, ability.AbilityValue, false);
+                    }
+                    else 
+                    {
+                        GameManagerScr.Instance.CurrentGame.Enemy.HP+=ability.AbilityValue;
+                        GameManagerScr.Instance.EnemyHero.ShowHeroHPChangedEvent(GameManagerScr.Instance.EnemyHero, ability.AbilityValue, false);
+                    }
                 break;
+
+                case abilityType.DAMAGE_EACH_TURN:
+                    if(CardController.IsPlayerCard && GameManagerScr.Instance.EnemyFieldCards.Count > 0)
+                    {
+                        for (int i = GameManagerScr.Instance.EnemyFieldCards.Count - 1; i >= 0; i--)
+                        {
+                            CardController.GiveDamageTo(GameManagerScr.Instance.EnemyFieldCards[i], ability.AbilityValue);
+                            
+                        }
+                    }
+                    else if(!CardController.IsPlayerCard && GameManagerScr.Instance.PlayerFieldCards.Count > 0)
+                    {
+                        for (int i = GameManagerScr.Instance.PlayerFieldCards.Count - 1; i >= 0; i--)
+                        {
+                            CardController.GiveDamageTo(GameManagerScr.Instance.PlayerFieldCards[i], ability.AbilityValue);
+                            
+                        }
+                    } 
+                    break;
                 
                 default: break;
             }

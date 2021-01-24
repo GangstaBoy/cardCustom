@@ -89,12 +89,21 @@ public class Card
         }
     }
 
+
+
     public void GetDamage(int damage)
     {
         if (damage > 0) 
         {
-            if(Abilities.Exists(x => x.AbilityType == CardAbility.abilityType.HOLY_SHIELD)) Abilities.Remove(Abilities.Find(x => x.AbilityType == CardAbility.abilityType.HOLY_SHIELD));
-            else Defense -= damage;
+            if(Abilities.Exists(x => x.AbilityType == CardAbility.abilityType.HOLY_SHIELD)) 
+            {
+                Debug.Log("Shield is found");
+                Abilities.RemoveAll(x => x.AbilityType == CardAbility.abilityType.HOLY_SHIELD);
+            }
+            else 
+            {
+                Defense -= damage;
+            }
         }
     }
 
@@ -177,21 +186,22 @@ public class CardManagerSrc : MonoBehaviour
         CardManager.AllCards.Add(new Card("hunter archer", "Sprites/Cards/archer-hunter", 2, 5, 0, 5, new List<CardAbility> {new CardAbility(CardAbility.abilityType.RANGED), new CardAbility(CardAbility.abilityType.INSTANT_ACTIVE)}));
         CardManager.AllCards.Add(new Card("assasin archer", "Sprites/Cards/archer-assasin", 5, 9, 0, 10, new List<CardAbility> {new CardAbility(CardAbility.abilityType.RANGED)}));
         CardManager.AllCards.Add(new Card("soldier archer", "Sprites/Cards/archer-soldier", 3, 6, 0, 5, new List<CardAbility> {new CardAbility(CardAbility.abilityType.RANGED)}));
-        CardManager.AllCards.Add(new Card("general scarlett", "Sprites/Cards/scarlet-general", 9, 13, 0, 18, new List<CardAbility> {new CardAbility(CardAbility.abilityType.DOUBLE_ATTACK)}));
+        CardManager.AllCards.Add(new Card("general scarlett", "Sprites/Cards/scarlet-general", 9, 13, 0, 18, new List<CardAbility> {new CardAbility(CardAbility.abilityType.DECREASE_ATTACK_ON_ATTACK, 3)}));
         CardManager.AllCards.Add(new Card("guard commander", "Sprites/Cards/guard-commander", 7, 11, 0, 12, new List<CardAbility> {new CardAbility(CardAbility.abilityType.DECREASE_ATTACK_ON_ATTACK)}));
-        CardManager.AllCards.Add(new Card("gnome warrior", "Sprites/Cards/gnome-warrior", 4, 18, 0, 13, new List<CardAbility> {new CardAbility(CardAbility.abilityType.REGENERATION_EACH_TURN, 1)}));
+        CardManager.AllCards.Add(new Card("gnome warrior", "Sprites/Cards/gnome-warrior", 4, 18, 0, 13, new List<CardAbility> {new CardAbility(CardAbility.abilityType.REGENERATION_EACH_TURN, 4)}));
         CardManager.AllCards.Add(new Card("crusader", "Sprites/Cards/crusader", 4, 8, 1, 7, new List<CardAbility> {new CardAbility(CardAbility.abilityType.HOLY_SHIELD)}));
-        CardManager.AllCards.Add(new Card("divine mistress", "Sprites/Cards/divine-mistress", 5, 15, 3, 12, new List<CardAbility> {new CardAbility(CardAbility.abilityType.HOLY_SHIELD), new CardAbility(CardAbility.abilityType.HERO_REGENERATION, 2), new CardAbility(CardAbility.abilityType.REGENERATION_EACH_TURN, 1), new CardAbility(CardAbility.abilityType.DAMAGE_ON_CAST, 3)}));
+        CardManager.AllCards.Add(new Card("divine mistress", "Sprites/Cards/divine-mistress", 5, 15, 3, 12, new List<CardAbility> {new CardAbility(CardAbility.abilityType.HOLY_SHIELD), new CardAbility(CardAbility.abilityType.REGENERATION_EACH_TURN, 1), new CardAbility(CardAbility.abilityType.DAMAGE_EACH_TURN, 1)}));
         CardManager.AllCards.Add(new Card("crusader commander", "Sprites/Cards/crusader-commander", 6, 12, 2, 9, new List<CardAbility> {new CardAbility(CardAbility.abilityType.HOLY_SHIELD), new CardAbility(CardAbility.abilityType.REGENERATION_EACH_TURN, 1)}));
         CardManager.AllCards.Add(new Card("crusader general", "Sprites/Cards/crusader-general", 6, 20, 4, 18, new List<CardAbility> {new CardAbility(CardAbility.abilityType.HOLY_SHIELD), new CardAbility(CardAbility.abilityType.REGENERATION_EACH_TURN, 1), new CardAbility(CardAbility.abilityType.PROVOCATION), new CardAbility(CardAbility.abilityType.DECREASE_ATTACK_ON_ATTACK)}));
-        CardManager.AllCards.Add(new Card("guild assasin", "Sprites/Cards/guild-assasin", 7, 1, 0, 6, new List<CardAbility> {new CardAbility(CardAbility.abilityType.INSTANT_ACTIVE), new CardAbility(CardAbility.abilityType.DAMAGE_ON_CAST, 1), new CardAbility(CardAbility.abilityType.HOLY_SHIELD)}));
+        CardManager.AllCards.Add(new Card("guild assasin", "Sprites/Cards/guild-assasin", 4, 2, 0, 6, new List<CardAbility> {new CardAbility(CardAbility.abilityType.INSTANT_ACTIVE), new CardAbility(CardAbility.abilityType.DAMAGE_HERO_ON_CAST, 3)}));
         // CardManager.AllCards.Add(new Card("wild werewolf", "Sprites/Cards/wild-werewolf", 4, 7, 0, 5, new List<CardAbility> {new CardAbility(CardAbility.abilityType.INSTANT_ACTIVE, new CardAbility(CardAbility.abilityType.REGENERATION_EACH_TURN, new CardAbility(CardAbility.abilityType.DECREASE_ATTACK_ON_ATTACK}));
     
 
 // SPELLS    
     
-        CardManager.AllCards.Add(new SpellCard("fireball", "Sprites/Cards/fireball", 2, 0, SpellCard.SpellType.DAMAGE_CARD, 5, SpellCard.TargetType.ENEMY_CARD_TARGET));
-        CardManager.AllCards.Add(new SpellCard("firewall", "Sprites/Cards/firewall", 8, 0, SpellCard.SpellType.DAMAGE_ENEMY_FIELD_CARDS, 5, SpellCard.TargetType.NO_TARGET));
+        CardManager.AllCards.Add(new SpellCard("fireball", "Sprites/Cards/fireball", 2, 0, SpellCard.SpellType.DAMAGE_CARD, 7, SpellCard.TargetType.ENEMY_CARD_TARGET));
+        CardManager.AllCards.Add(new SpellCard("magic missle", "Sprites/Cards/magic-missle", 1, 0, SpellCard.SpellType.DAMAGE_CARD, 4, SpellCard.TargetType.ENEMY_CARD_TARGET));
+        CardManager.AllCards.Add(new SpellCard("firewall", "Sprites/Cards/firewall", 5, 0, SpellCard.SpellType.DAMAGE_ENEMY_FIELD_CARDS, 5, SpellCard.TargetType.NO_TARGET));
         CardManager.AllCards.Add(new SpellCard("healing wave", "Sprites/Cards/healing-wave 1", 2, 0, SpellCard.SpellType.HEAL_ALLY_FIELD_CARDS, 3, SpellCard.TargetType.NO_TARGET));
         CardManager.AllCards.Add(new SpellCard("mana potion", "Sprites/Cards/mana-potion", 0, 3, SpellCard.SpellType.ADD_MANA, 2, SpellCard.TargetType.NO_TARGET));
         CardManager.AllCards.Add(new SpellCard("lighting bolt", "Sprites/Cards/lightning", 8, 0, SpellCard.SpellType.DAMAGE_ENEMY_HERO, 5, SpellCard.TargetType.NO_TARGET));

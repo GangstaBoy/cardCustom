@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class CardController : MonoBehaviour
 {
@@ -77,14 +78,30 @@ public class CardController : MonoBehaviour
         switch (spellCard.Spell)
         {
             case SpellCard.SpellType.ADD_GOLD:
-                if (IsPlayerCard) GameManagerScr.Instance.CurrentGame.Player.Gold += spellCard.SpellValue;
-                else GameManagerScr.Instance.CurrentGame.Enemy.Gold += spellCard.SpellValue;
+                if (IsPlayerCard) 
+                {
+                    GameManagerScr.Instance.CurrentGame.Player.Gold += spellCard.SpellValue;
+                    GameManagerScr.Instance.PlayerHero.ShowHeroGoldChangedEvent(GameManagerScr.Instance.PlayerHero, spellCard.SpellValue);
+                }
+                else 
+                {
+                    GameManagerScr.Instance.CurrentGame.Enemy.Gold += spellCard.SpellValue;
+                    GameManagerScr.Instance.EnemyHero.ShowHeroGoldChangedEvent(GameManagerScr.Instance.EnemyHero, spellCard.SpellValue);
+                }
                 UIController.Instance.UpdateResources();
             break;
 
             case SpellCard.SpellType.ADD_MANA:
-                if (IsPlayerCard) GameManagerScr.Instance.CurrentGame.Player.Mana += spellCard.SpellValue;
-                else GameManagerScr.Instance.CurrentGame.Enemy.Mana += spellCard.SpellValue;
+                if (IsPlayerCard) 
+                {
+                    GameManagerScr.Instance.CurrentGame.Player.Mana += spellCard.SpellValue;
+                    GameManagerScr.Instance.PlayerHero.ShowHeroMPChangedEvent(GameManagerScr.Instance.PlayerHero, spellCard.SpellValue);
+                }
+                else 
+                {
+                    GameManagerScr.Instance.CurrentGame.Enemy.Mana += spellCard.SpellValue;
+                    GameManagerScr.Instance.EnemyHero.ShowHeroMPChangedEvent(GameManagerScr.Instance.EnemyHero, spellCard.SpellValue);
+                }
                 UIController.Instance.UpdateResources();
             break;
 
@@ -120,15 +137,22 @@ public class CardController : MonoBehaviour
 
                 foreach (var card in allyCards)
                 {
-                    card.Card.Defense = Mathf.Min(card.Card.Defense + spellCard.SpellValue, card.Card.MaxDefense);
-                    card.Info.Refresh();
+                    card.RegenCardHP(card, spellCard.SpellValue);
                 }
 
             break;
 
             case SpellCard.SpellType.HEAL_ALLY_HERO:
-                if (IsPlayerCard) GameManagerScr.Instance.CurrentGame.Player.HP += spellCard.SpellValue;
-                else GameManagerScr.Instance.CurrentGame.Enemy.HP += spellCard.SpellValue;
+                if (IsPlayerCard) 
+                {
+                    GameManagerScr.Instance.CurrentGame.Player.HP += spellCard.SpellValue;
+                    GameManagerScr.Instance.PlayerHero.ShowHeroHPChangedEvent(GameManagerScr.Instance.PlayerHero, spellCard.SpellValue, false);
+                }
+                else 
+                {
+                    GameManagerScr.Instance.CurrentGame.Enemy.HP += spellCard.SpellValue;
+                    GameManagerScr.Instance.EnemyHero.ShowHeroHPChangedEvent(GameManagerScr.Instance.EnemyHero, spellCard.SpellValue, false);
+                }
                 UIController.Instance.UpdateResources();
             break;
 
@@ -148,8 +172,7 @@ public class CardController : MonoBehaviour
             break;
 
             case SpellCard.SpellType.HEAL_CARD:
-                target.Card.Defense = Mathf.Min(target.Card.Defense + spellCard.SpellValue, target.Card.MaxDefense);
-                target.Info.Refresh();
+                target.RegenCardHP(target, spellCard.SpellValue);
             break;
 
             default:
@@ -168,10 +191,35 @@ public class CardController : MonoBehaviour
 
     public void GiveDamageTo(CardController card, int damage)
     {
+        if(!card.Card.Abilities.Exists(x => x.AbilityType == CardAbility.abilityType.HOLY_SHIELD)) // fix here not to check twice
+        ShowCardHPChangedEvent(card, damage, true);
         card.Card.GetDamage(damage);
+
         card.OnTakeDamage();
         card.CheckIfAlive();
     }
+
+    public void RegenCardHP(CardController card, int regenAmount)
+    {
+        if(card.Card.Defense < card.Card.MaxDefense) 
+        {
+            card.Card.Defense = Mathf.Min(card.Card.Defense+regenAmount, card.Card.MaxDefense);
+            card.Info.Refresh();
+            ShowCardHPChangedEvent(card, regenAmount, false);
+        }
+    }
+
+    void ShowCardHPChangedEvent(CardController card, int damageAmount, bool damage)
+     {
+        
+        Transform startPoint = card.transform.Find("DamageStartPoint");
+        TextMeshProUGUI tooltipBase = damage ? GameObject.Find("DamageTooltip").GetComponent<TextMeshProUGUI>() : GameObject.Find("HPRegenTooltip").GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI tooltip = Instantiate(tooltipBase, startPoint, false);
+        tooltip.text = damage ? "-" + damageAmount.ToString() + "!" : "+" + damageAmount.ToString();
+        tooltip.transform.SetParent(startPoint);
+        Destroy(tooltip, 0.75f);
+     }
+
     public void CheckIfAlive()
     {
         if (Card.IsAlive) Info.Refresh();

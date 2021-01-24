@@ -11,7 +11,7 @@ public class DeckController : MonoBehaviour, IPointerClickHandler
     public void customDeck()
     {
         SpellCard spellCard = (SpellCard)CardManager.AllCards.Find(x => x.Name == "mana potion");
-        Card card = CardManager.AllCards.Find(x => x.Name == "alfa wolf");
+        Card card = CardManager.AllCards.Find(x => x.Name == "guild assasin");
                 if (spellCard.IsSpell) Cards.Add(((SpellCard)spellCard).GetCopy());
                 else Cards.Add(spellCard.GetCopy());
         for(int i = 0; i<5; i++)

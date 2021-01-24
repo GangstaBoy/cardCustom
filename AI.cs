@@ -39,7 +39,7 @@ public class AI : MonoBehaviour
             }
         }
 
-        yield return new WaitForSeconds(.051f);
+        yield return new WaitForSeconds(.51f);
 
         while (GameManagerScr.Instance.EnemyFieldCards.Exists(x => x.Info.CanAttack))
         {
