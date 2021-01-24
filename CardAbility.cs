@@ -28,10 +28,9 @@ public class CardAbility : MonoBehaviour
                 break;
 
                 case Card.abilityType.DAMAGE_ON_CAST:
-                    Debug.Log("Damage on Cast");
                     if(CardController.IsPlayerCard && GameManagerScr.Instance.EnemyFieldCards.Count > 0)
                     {
-                        for (int i = GameManagerScr.Instance.EnemyFieldCards.Count - 1; i < 0; i--)
+                        for (int i = GameManagerScr.Instance.EnemyFieldCards.Count - 1; i >= 0; i--)
                         {
                             Debug.Log("Damage to " + GameManagerScr.Instance.EnemyFieldCards[i].name);
                             CardController.GiveDamageTo(GameManagerScr.Instance.EnemyFieldCards[i], 2);
@@ -40,7 +39,7 @@ public class CardAbility : MonoBehaviour
                     }
                     else if(!CardController.IsPlayerCard && GameManagerScr.Instance.PlayerFieldCards.Count > 0)
                     {
-                        for (int i = GameManagerScr.Instance.PlayerFieldCards.Count - 1; i < 0; i--)
+                        for (int i = GameManagerScr.Instance.PlayerFieldCards.Count - 1; i >= 0; i--)
                         {
                             Debug.Log("Damage to " + GameManagerScr.Instance.EnemyFieldCards[i].name);
                             CardController.GiveDamageTo(GameManagerScr.Instance.PlayerFieldCards[i], 2);

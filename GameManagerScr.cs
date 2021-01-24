@@ -7,36 +7,27 @@ using TMPro;
 public class Game 
 {
     public Player Player, Enemy;
-    public List<Card> EnemyDeck, PlayerDeck, PlayerHand, EnemyHand, PlayerField, EnemyField;
+    public List<Card> PlayerHand, EnemyHand, PlayerField, EnemyField;
     
 
     public Game()
     {
         Player = new Player();
         Enemy = new Player();
+        GameManagerScr.Instance.EnemyDeck.RandomizeDeck(15);
+        GameManagerScr.Instance.PlayerDeck.customDeck();
         //SpellCard card = (SpellCard)CardManager.AllCards.Find(x => x.Name == "mana potion");
         //EnemyDeck = new List<Card>{card.GetCopy(), card.GetCopy(), card.GetCopy()};
-        EnemyDeck = GiveDeckCard();
         //PlayerDeck = new List<Card>{card.GetCopy(), card.GetCopy(), card.GetCopy()};
-        PlayerDeck = GiveDeckCard();
-       
+
     }
 
-    List<Card> GiveDeckCard()
-    {
-        List<Card> list = new List<Card>();
-        for(int i = 0; i<20; i++)
-        {
-            var card = CardManager.AllCards[Random.Range(0, CardManager.AllCards.Count)];
-            if (card.IsSpell) list.Add(((SpellCard)card).GetCopy());
-            else list.Add(card.GetCopy());
-        }
-        return list;
-    }
+
 }
 
 public class GameManagerScr : MonoBehaviour
 {
+    public DeckController PlayerDeck, EnemyDeck;
     public AI EnemyAI;
     public static GameManagerScr Instance;
     public Game CurrentGame;
@@ -70,25 +61,8 @@ public class GameManagerScr : MonoBehaviour
         if(Instance == null) Instance = this;
     }
 
-    void GiveHandCards(List<Card> deck, Transform hand)
-    {
-        for(int i = 0; i<4; i++)
-            GiveCardToHand(deck, hand);
-    }
 
-    void GiveCardToHand(List<Card> deck, Transform hand)
-    {
-        if(deck.Count == 0)
-            return;
-        
-        CreateCardPref(deck[0], hand);
-        Debug.Log("Card " + deck[0].Name + " to " + hand );
-
-        deck.RemoveAt(0);
-
-    }
-
-    void CreateCardPref(Card card, Transform hand)
+    public void CreateCardPref(Card card, Transform hand)
     {
         GameObject cardGO = Instantiate(CardPref, hand, false);
         CardController CardC = cardGO.GetComponent<CardController>();
@@ -154,11 +128,11 @@ public class GameManagerScr : MonoBehaviour
         StopAllCoroutines();
 
         Turn++;
+        GiveNewCards(IsPlayerTurn);
         UIController.Instance.DisableTurnButton();
         if(IsPlayerTurn)
         {
             CurrentGame.Player.RestoreRoundResoures();
-            GiveNewCards();
             CheckIfCardsPlayable();
         } 
         else 
@@ -170,10 +144,11 @@ public class GameManagerScr : MonoBehaviour
         StartCoroutine(TurnFunc());
     }
 
-    void GiveNewCards()
+    void GiveNewCards(bool isPlayerTurn)
     {
-        GiveCardToHand(CurrentGame.EnemyDeck, EnemyHand);
-        GiveCardToHand(CurrentGame.PlayerDeck, PlayerHand);
+        if(isPlayerTurn) PlayerDeck.GiveCardToHand(PlayerHand);
+        else EnemyDeck.GiveCardToHand(EnemyHand);
+        
     }
     public void CardsFight(CardController attacker, CardController defender)
     {
@@ -313,9 +288,10 @@ public class GameManagerScr : MonoBehaviour
 
         Turn = 0;
         CurrentGame = new Game();
+        
 
-        GiveHandCards(CurrentGame.EnemyDeck, EnemyHand);
-        GiveHandCards(CurrentGame.PlayerDeck, PlayerHand);
+        EnemyDeck.GiveCardToHand(EnemyHand, 4); //todo: fix
+        PlayerDeck.GiveCardToHand(PlayerHand, 4); //todo: fix
         UIController.Instance.StartGame();
         UIController.Instance.UpdateResources();
         CheckIfCardsPlayable();
