@@ -4,11 +4,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class Game 
+public class Game
 {
     public Player Player, Enemy;
     public List<Card> PlayerHand, EnemyHand, PlayerField, EnemyField;
-    
+
 
     public Game()
     {
@@ -38,9 +38,9 @@ public class GameManagerScr : MonoBehaviour
 
     public AttackedHero EnemyHero, PlayerHero;
 
-    public bool IsPlayerTurn 
+    public bool IsPlayerTurn
     {
-        get 
+        get
         {
             return Turn % 2 == 0;
         }
@@ -49,7 +49,7 @@ public class GameManagerScr : MonoBehaviour
     public List<CardController> PlayerHandCards = new List<CardController>(),
                                 EnemyHandCards = new List<CardController>(),
                                 PlayerFieldCards = new List<CardController>(),
-                                EnemyFieldCards = new List<CardController>();                                 
+                                EnemyFieldCards = new List<CardController>();
 
 
     void Start()
@@ -57,9 +57,9 @@ public class GameManagerScr : MonoBehaviour
         StartGame();
     }
 
-    void Awake() 
+    void Awake()
     {
-        if(Instance == null) Instance = this;
+        if (Instance == null) Instance = this;
     }
 
 
@@ -79,23 +79,24 @@ public class GameManagerScr : MonoBehaviour
         TurnTime = 30;
         UIController.Instance.UpdateTurnTime(TurnTime);
         foreach (var card in PlayerFieldCards)
-            {
-                card.Info.HighlightCard(false);
-            }
+        {
+            card.Info.HighlightCard(false);
+        }
 
-        if(IsPlayerTurn)
+        if (IsPlayerTurn)
         {
             foreach (var card in PlayerFieldCards)
             {
-                if(card.Card.Attack > 0 && !card.Card.Name.Contains("wall")){
+                if (card.Card.Attack > 0 && !card.Card.Name.Contains("wall"))
+                {
                     card.Info.CanAttack = true;
                     card.Info.HighlightCard(true);
                     card.AbilityController.OnNewTurn();
                 }
-                
+
             }
 
-            while(TurnTime-- > 0)
+            while (TurnTime-- > 0)
             {
                 UIController.Instance.UpdateTurnTime(TurnTime);
                 yield return new WaitForSeconds(1);
@@ -108,13 +109,13 @@ public class GameManagerScr : MonoBehaviour
         {
             foreach (var card in EnemyFieldCards)
             {
-                if(card.Card.Attack > 0 && !card.Card.Name.Contains("wall")) card.Info.CanAttack = true;
+                if (card.Card.Attack > 0 && !card.Card.Name.Contains("wall")) card.Info.CanAttack = true;
                 card.AbilityController.OnNewTurn();
             }
 
             EnemyAI.MakeTurn();
 
-            while(TurnTime-- > 0)
+            while (TurnTime-- > 0)
             {
                 UIController.Instance.UpdateTurnTime(TurnTime);
                 yield return new WaitForSeconds(1);
@@ -131,14 +132,14 @@ public class GameManagerScr : MonoBehaviour
         Turn++;
         GiveNewCards(IsPlayerTurn);
         UIController.Instance.DisableTurnButton();
-        if(IsPlayerTurn)
+        if (IsPlayerTurn)
         {
             CurrentGame.Player.RestoreRoundResoures();
             GameManagerScr.Instance.PlayerHero.ShowHeroGoldChangedEvent(GameManagerScr.Instance.PlayerHero, CurrentGame.Player.GoldRate);
             GameManagerScr.Instance.PlayerHero.ShowHeroMPChangedEvent(GameManagerScr.Instance.PlayerHero, CurrentGame.Player.ManaRate);
             CheckIfCardsPlayable();
-        } 
-        else 
+        }
+        else
         {
             CurrentGame.Enemy.RestoreRoundResoures();
             GameManagerScr.Instance.EnemyHero.ShowHeroGoldChangedEvent(GameManagerScr.Instance.EnemyHero, CurrentGame.Enemy.GoldRate);
@@ -151,9 +152,9 @@ public class GameManagerScr : MonoBehaviour
 
     void GiveNewCards(bool isPlayerTurn)
     {
-        if(isPlayerTurn) PlayerDeck.GiveCardToHand(PlayerHand);
+        if (isPlayerTurn) PlayerDeck.GiveCardToHand(PlayerHand);
         else EnemyDeck.GiveCardToHand(EnemyHand);
-        
+
     }
     public void CardsFight(CardController attacker, CardController defender)
     {
@@ -162,19 +163,19 @@ public class GameManagerScr : MonoBehaviour
         attacker.OnDamageDeal();
         defender.OnTakeDamage(attacker);
 
-        if(!attacker.Card.Ranged) 
+        if (!attacker.Card.Ranged)
         {
             defender.GiveDamageTo(attacker, defender.Card.Attack);
             attacker.OnTakeDamage();
         }
 
-        if(!defender.Card.IsAlive && !IsPlayerTurn)
+        if (!defender.Card.IsAlive && !IsPlayerTurn)
         {
             CurrentGame.Enemy.Gold++;
             GameManagerScr.Instance.EnemyHero.ShowHeroGoldChangedEvent(GameManagerScr.Instance.EnemyHero, 1);
         }
 
-        if(!defender.Card.IsAlive && IsPlayerTurn)
+        if (!defender.Card.IsAlive && IsPlayerTurn)
         {
             CurrentGame.Player.Gold++;
             GameManagerScr.Instance.PlayerHero.ShowHeroGoldChangedEvent(GameManagerScr.Instance.PlayerHero, 1);
@@ -185,15 +186,15 @@ public class GameManagerScr : MonoBehaviour
 
     public void ReduceManaAndGold(bool isPlayer, int manacost, int goldcost)
     {
-        if(isPlayer)
+        if (isPlayer)
         {
-            CurrentGame.Player.Mana = Mathf.Clamp(CurrentGame.Player.Mana - manacost,0,int.MaxValue);
-            CurrentGame.Player.Gold = Mathf.Clamp(CurrentGame.Player.Gold - goldcost,0,int.MaxValue);
+            CurrentGame.Player.Mana = Mathf.Clamp(CurrentGame.Player.Mana - manacost, 0, int.MaxValue);
+            CurrentGame.Player.Gold = Mathf.Clamp(CurrentGame.Player.Gold - goldcost, 0, int.MaxValue);
         }
         else
         {
-            CurrentGame.Enemy.Mana = Mathf.Clamp(CurrentGame.Enemy.Mana - manacost,0,int.MaxValue);
-            CurrentGame.Enemy.Gold = Mathf.Clamp(CurrentGame.Enemy.Gold - goldcost,0,int.MaxValue);
+            CurrentGame.Enemy.Mana = Mathf.Clamp(CurrentGame.Enemy.Mana - manacost, 0, int.MaxValue);
+            CurrentGame.Enemy.Gold = Mathf.Clamp(CurrentGame.Enemy.Gold - goldcost, 0, int.MaxValue);
         }
 
         UIController.Instance.UpdateResources();
@@ -201,12 +202,12 @@ public class GameManagerScr : MonoBehaviour
 
     public void DamageHero(CardController card, bool isEnemyAttacked)
     {
-        if(isEnemyAttacked) 
+        if (isEnemyAttacked)
         {
             CurrentGame.Enemy.GetDamage(card.Card.Attack);
             EnemyHero.ShowHeroHPChangedEvent(EnemyHero, card.Card.Attack, true);
         }
-        else 
+        else
         {
             CurrentGame.Player.GetDamage(card.Card.Attack);
             PlayerHero.ShowHeroHPChangedEvent(PlayerHero, card.Card.Attack, true);
@@ -218,14 +219,14 @@ public class GameManagerScr : MonoBehaviour
 
     public void CheckResult()
     {
-        if(CurrentGame.Enemy.HP <=0 || CurrentGame.Player.HP <= 0) 
+        if (CurrentGame.Enemy.HP <= 0 || CurrentGame.Player.HP <= 0)
         {
             StopAllCoroutines();
             UIController.Instance.ShowResult();
         }
     }
 
-    public void CheckIfCardsPlayable() 
+    public void CheckIfCardsPlayable()
     {
         foreach (var card in PlayerHandCards)
         {
@@ -237,24 +238,24 @@ public class GameManagerScr : MonoBehaviour
     {
         List<CardController> targets = new List<CardController>();
 
-        if(activeCard.IsSpell)
+        if (activeCard.IsSpell)
         {
             var spellCard = (SpellCard)activeCard;
 
-            if(spellCard.SpellTarget == SpellCard.TargetType.NO_TARGET)
+            if (spellCard.SpellTarget == SpellCard.TargetType.NO_TARGET)
                 targets = new List<CardController>();
 
-            if(spellCard.SpellTarget == SpellCard.TargetType.ALLY_CARD_TARGET)
+            if (spellCard.SpellTarget == SpellCard.TargetType.ALLY_CARD_TARGET)
                 targets = PlayerFieldCards;
 
-            if(spellCard.SpellTarget == SpellCard.TargetType.ENEMY_CARD_TARGET)
+            if (spellCard.SpellTarget == SpellCard.TargetType.ENEMY_CARD_TARGET)
                 targets = EnemyFieldCards;
         }
 
         else
         {
-            if(EnemyFieldCards.Exists(x => x.Card.IsProvocation))
-            targets = EnemyFieldCards.FindAll(x => x.Card.IsProvocation);
+            if (EnemyFieldCards.Exists(x => x.Card.IsProvocation) && !activeCard.Ranged)
+                targets = EnemyFieldCards.FindAll(x => x.Card.IsProvocation);
             else targets = EnemyFieldCards;
         }
 
@@ -263,14 +264,14 @@ public class GameManagerScr : MonoBehaviour
 
         foreach (var card in targets)
         {
-            if(activeCard.IsSpell) card.Info.HighlightAsSpellTarget(highlight);
+            if (activeCard.IsSpell) card.Info.HighlightAsSpellTarget(highlight);
             else card.Info.HighlightAsTarget(highlight);
         }
 
-        if((EnemyFieldCards.Count == 0 || activeCard.Ranged)&&!activeCard.IsSpell)
+        if ((EnemyFieldCards.Count == 0 || activeCard.Ranged) && !activeCard.IsSpell)
             EnemyHero.HighlightAsTarget(highlight);
-        
-        
+
+
     }
 
     public void RestartGame()
@@ -299,7 +300,7 @@ public class GameManagerScr : MonoBehaviour
 
         Turn = 0;
         CurrentGame = new Game();
-        
+
 
         EnemyDeck.GiveCardToHand(EnemyHand, 4); //todo: fix
         PlayerDeck.GiveCardToHand(PlayerHand, 4); //todo: fix
