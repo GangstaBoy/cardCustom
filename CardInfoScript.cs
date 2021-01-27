@@ -15,7 +15,7 @@ public class CardInfoScript : MonoBehaviour
     public TextMeshProUGUI Goldcost;
     public GameObject HideObj, HighlightedObj;
     public bool CanAttack;
-    public Color NormalCol, TargetCol, SpellTargetCol; 
+    public Color NormalCol, TargetCol, SpellTargetCol;
 
     public void ShowCardInfo()
     {
@@ -26,7 +26,7 @@ public class CardInfoScript : MonoBehaviour
         HighlightedObj.SetActive(false);
         CanAttack = false;
 
-        if(CC.Card.IsSpell)
+        if (CC.Card.IsSpell)
         {
             Attack.gameObject.SetActive(false);
             Defense.gameObject.SetActive(false);
@@ -51,22 +51,22 @@ public class CardInfoScript : MonoBehaviour
         Goldcost.text = "";
     }
 
-    public void HighlightCard(bool highlight) 
+    public void HighlightCard(bool highlight)
     {
-        if(HighlightedObj) HighlightedObj.SetActive(highlight);
+        if (HighlightedObj) HighlightedObj.SetActive(highlight);
     }
 
     public void CheckIfCanBePlayed(int CurrentMana, int CurrentGold)
     {
-        GetComponent<CanvasGroup>().alpha = (CurrentMana >= CC.Card.Manacost && CurrentGold >= CC.Card.Goldcost) ? 1 : .5f;
+        GetComponent<CanvasGroup>().alpha = (CurrentMana >= CC.Card.Manacost && CurrentGold >= CC.Card.Goldcost && CC.Movement.IsDraggable) ? 1 : .5f;
     }
 
-    public void HighlightAsTarget (bool highlight)
+    public void HighlightAsTarget(bool highlight)
     {
         GetComponent<Image>().color = highlight ? TargetCol : NormalCol;
     }
 
-    public void HighlightAsSpellTarget (bool highlight)
+    public void HighlightAsSpellTarget(bool highlight)
     {
         GetComponent<Image>().color = highlight ? SpellTargetCol : NormalCol;
     }

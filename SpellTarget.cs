@@ -7,8 +7,8 @@ public class SpellTarget : MonoBehaviour, IDropHandler
 {
     public void OnDrop(PointerEventData eventData)
     {
-        if(!GameManagerScr.Instance.IsPlayerTurn) return;
-        
+        if (!GameManagerScr.Instance.IsPlayerTurn) return;
+
         CardController spell = eventData.pointerDrag.GetComponent<CardController>(),
                         target = GetComponent<CardController>();
 
@@ -16,12 +16,11 @@ public class SpellTarget : MonoBehaviour, IDropHandler
         {
             var spellCard = (SpellCard)spell.Card;
 
-            if((spellCard.SpellTarget == SpellCard.TargetType.ENEMY_CARD_TARGET && !target.IsPlayerCard) 
+            if ((spellCard.SpellTarget == SpellCard.TargetType.ENEMY_CARD_TARGET && !target.IsPlayerCard)
             || (spellCard.SpellTarget == SpellCard.TargetType.ALLY_CARD_TARGET && target.IsPlayerCard))
             {
                 GameManagerScr.Instance.ReduceManaAndGold(true, spell.Card.Manacost, spell.Card.Goldcost);
                 spell.UseSpell(target);
-                GameManagerScr.Instance.CheckIfCardsPlayable();
             }
 
         }

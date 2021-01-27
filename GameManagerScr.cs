@@ -57,6 +57,11 @@ public class GameManagerScr : MonoBehaviour
         StartGame();
     }
 
+    void Update()
+    {
+        CheckIfCardsPlayable();
+    }
+
     void Awake()
     {
         if (Instance == null) Instance = this;
@@ -100,7 +105,6 @@ public class GameManagerScr : MonoBehaviour
             {
                 UIController.Instance.UpdateTurnTime(TurnTime);
                 yield return new WaitForSeconds(1);
-                CheckIfCardsPlayable();
             }
 
             ChangeTurn();
@@ -137,7 +141,6 @@ public class GameManagerScr : MonoBehaviour
             CurrentGame.Player.RestoreRoundResoures();
             GameManagerScr.Instance.PlayerHero.ShowHeroGoldChangedEvent(GameManagerScr.Instance.PlayerHero, CurrentGame.Player.GoldRate);
             GameManagerScr.Instance.PlayerHero.ShowHeroMPChangedEvent(GameManagerScr.Instance.PlayerHero, CurrentGame.Player.ManaRate);
-            CheckIfCardsPlayable();
         }
         else
         {
@@ -145,7 +148,6 @@ public class GameManagerScr : MonoBehaviour
             GameManagerScr.Instance.EnemyHero.ShowHeroGoldChangedEvent(GameManagerScr.Instance.EnemyHero, CurrentGame.Enemy.GoldRate);
             GameManagerScr.Instance.EnemyHero.ShowHeroMPChangedEvent(GameManagerScr.Instance.EnemyHero, CurrentGame.Enemy.ManaRate);
         }
-        UIController.Instance.UpdateResources();
 
         StartCoroutine(TurnFunc());
     }
@@ -180,7 +182,6 @@ public class GameManagerScr : MonoBehaviour
             CurrentGame.Player.Gold++;
             GameManagerScr.Instance.PlayerHero.ShowHeroGoldChangedEvent(GameManagerScr.Instance.PlayerHero, 1);
         }
-        UIController.Instance.UpdateResources();
         CheckIfCardsPlayable();
     }
 
@@ -197,7 +198,6 @@ public class GameManagerScr : MonoBehaviour
             CurrentGame.Enemy.Gold = Mathf.Clamp(CurrentGame.Enemy.Gold - goldcost, 0, int.MaxValue);
         }
 
-        UIController.Instance.UpdateResources();
     }
 
     public void DamageHero(CardController card, bool isEnemyAttacked)
@@ -213,7 +213,6 @@ public class GameManagerScr : MonoBehaviour
             PlayerHero.ShowHeroHPChangedEvent(PlayerHero, card.Card.Attack, true);
         }
         card.OnDamageDeal();
-        UIController.Instance.UpdateResources();
         CheckResult();
     }
 
@@ -305,8 +304,6 @@ public class GameManagerScr : MonoBehaviour
         EnemyDeck.GiveCardToHand(EnemyHand, 4); //todo: fix
         PlayerDeck.GiveCardToHand(PlayerHand, 4); //todo: fix
         UIController.Instance.StartGame();
-        UIController.Instance.UpdateResources();
-        CheckIfCardsPlayable();
 
         StartCoroutine(TurnFunc());
     }

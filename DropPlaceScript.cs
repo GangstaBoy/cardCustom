@@ -16,25 +16,26 @@ public class DropPlaceScript : MonoBehaviour, IDropHandler, IPointerEnterHandler
     public FieldType type;
     public void OnDrop(PointerEventData eventData)
     {
-        if(type!=FieldType.SELF_FIELD)
+        if (type != FieldType.SELF_FIELD)
             return;
 
         CardController card = eventData.pointerDrag.GetComponent<CardController>();
 
         if (card
-        && GameManagerScr.Instance.IsPlayerTurn 
+        && GameManagerScr.Instance.IsPlayerTurn
         && GameManagerScr.Instance.CurrentGame.Player.Gold >= card.Card.Goldcost
         && GameManagerScr.Instance.CurrentGame.Player.Mana >= card.Card.Manacost
-        && !card.Card.IsPlaced)
+        && !card.Card.IsPlaced
+        && card.Movement.IsDraggable)
         {
-            if(card.Card.IsSpell)
+            if (card.Card.IsSpell)
             {
                 card.OnCast();
             }
             else
             {
                 card.Movement.DefaultParent = transform;
-                card.OnCast(); 
+                card.OnCast();
             }
         }
 
@@ -42,7 +43,7 @@ public class DropPlaceScript : MonoBehaviour, IDropHandler, IPointerEnterHandler
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if(eventData.pointerDrag == null || type == FieldType.ENEMY_HAND || type == FieldType.ENEMY_FIELD || type == FieldType.SELF_HAND)
+        if (eventData.pointerDrag == null || type == FieldType.ENEMY_HAND || type == FieldType.ENEMY_FIELD || type == FieldType.SELF_HAND)
             return;
 
         CardMovementScript card = eventData.pointerDrag.GetComponent<CardMovementScript>();
@@ -53,13 +54,13 @@ public class DropPlaceScript : MonoBehaviour, IDropHandler, IPointerEnterHandler
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if(eventData.pointerDrag == null || type == FieldType.ENEMY_HAND || type == FieldType.ENEMY_FIELD || type == FieldType.SELF_HAND) 
+        if (eventData.pointerDrag == null || type == FieldType.ENEMY_HAND || type == FieldType.ENEMY_FIELD || type == FieldType.SELF_HAND)
             return;
 
         CardMovementScript card = eventData.pointerDrag.GetComponent<CardMovementScript>();
-        
+
         if (card && card.DefaultTempCardParent == transform)
             card.DefaultTempCardParent = card.DefaultParent;
-        
+
     }
 }

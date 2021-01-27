@@ -25,6 +25,11 @@ public class UIController : MonoBehaviour
         DontDestroyOnLoad(this);
     }
 
+    void Update()
+    {
+        UpdateResources();
+    }
+
     public void StartGame()
     {
         EndTurnButton.interactable = true;
@@ -44,22 +49,22 @@ public class UIController : MonoBehaviour
 
     }
 
-     public void ShowResult()
-     {
-         ResultGo.SetActive(true);
-         if(GameManagerScr.Instance.CurrentGame.Player.HP <= 0) ResultText.text = "You lost!";
-         else ResultText.text = "You won!";
-     }
+    public void ShowResult()
+    {
+        ResultGo.SetActive(true);
+        if (GameManagerScr.Instance.CurrentGame.Player.HP <= 0) ResultText.text = "You lost!";
+        else ResultText.text = "You won!";
+    }
 
-     public void UpdateTurnTime (int time)
-     {
-         TurnTime.text = time.ToString();
-     }
-     
-     public void DisableTurnButton()
-     {
-         EndTurnButton.interactable = GameManagerScr.Instance.IsPlayerTurn; //quite a strange implementation
-     }
+    public void UpdateTurnTime(int time)
+    {
+        TurnTime.text = time.ToString();
+    }
+
+    public void DisableTurnButton()
+    {
+        EndTurnButton.interactable = GameManagerScr.Instance.IsPlayerTurn; //quite a strange implementation
+    }
 
 
 }

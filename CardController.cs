@@ -39,7 +39,6 @@ public class CardController : MonoBehaviour
             GameManager.PlayerHandCards.Remove(this);
             GameManager.PlayerFieldCards.Add(this);
             GameManager.ReduceManaAndGold(true, Card.Manacost, Card.Goldcost);
-            GameManager.CheckIfCardsPlayable();
 
         }
         else
@@ -53,7 +52,6 @@ public class CardController : MonoBehaviour
         Card.IsPlaced = true;
         if (Card.HasAbility) AbilityController.OnCast();
         if (Card.IsSpell) UseSpell(null);
-        UIController.Instance.UpdateResources();
     }
 
     public void OnTakeDamage(CardController attacker = null)
@@ -88,7 +86,6 @@ public class CardController : MonoBehaviour
                     GameManagerScr.Instance.CurrentGame.Enemy.Gold += spellCard.SpellValue;
                     GameManagerScr.Instance.EnemyHero.ShowHeroGoldChangedEvent(GameManagerScr.Instance.EnemyHero, spellCard.SpellValue);
                 }
-                UIController.Instance.UpdateResources();
                 break;
 
             case SpellCard.SpellType.ADD_MANA:
@@ -102,7 +99,6 @@ public class CardController : MonoBehaviour
                     GameManagerScr.Instance.CurrentGame.Enemy.Mana += spellCard.SpellValue;
                     GameManagerScr.Instance.EnemyHero.ShowHeroMPChangedEvent(GameManagerScr.Instance.EnemyHero, spellCard.SpellValue);
                 }
-                UIController.Instance.UpdateResources();
                 break;
 
             case SpellCard.SpellType.BUFF_CARD_DAMAGE:
@@ -121,9 +117,16 @@ public class CardController : MonoBehaviour
                 break;
 
             case SpellCard.SpellType.DAMAGE_ENEMY_HERO:
-                if (IsPlayerCard) GameManagerScr.Instance.CurrentGame.Enemy.HP -= spellCard.SpellValue;
-                else GameManagerScr.Instance.CurrentGame.Player.HP -= spellCard.SpellValue;
-                UIController.Instance.UpdateResources();
+                if (IsPlayerCard)
+                {
+                    GameManagerScr.Instance.CurrentGame.Enemy.HP -= spellCard.SpellValue;
+                    GameManagerScr.Instance.EnemyHero.ShowHeroHPChangedEvent(GameManagerScr.Instance.EnemyHero, spellCard.SpellValue, true);
+                }
+                else
+                {
+                    GameManagerScr.Instance.CurrentGame.Player.HP -= spellCard.SpellValue;
+                    GameManagerScr.Instance.PlayerHero.ShowHeroHPChangedEvent(GameManagerScr.Instance.PlayerHero, spellCard.SpellValue, true);
+                }
                 GameManager.CheckResult();
                 break;
 
@@ -132,7 +135,6 @@ public class CardController : MonoBehaviour
                 break;
 
             case SpellCard.SpellType.HEAL_ALLY_FIELD_CARDS:
-                Debug.Log("Healing Inside");
                 var allyCards = IsPlayerCard ? GameManager.PlayerFieldCards : GameManager.EnemyFieldCards;
 
                 foreach (var card in allyCards)
@@ -153,7 +155,6 @@ public class CardController : MonoBehaviour
                     GameManagerScr.Instance.CurrentGame.Enemy.HP += spellCard.SpellValue;
                     GameManagerScr.Instance.EnemyHero.ShowHeroHPChangedEvent(GameManagerScr.Instance.EnemyHero, spellCard.SpellValue, false);
                 }
-                UIController.Instance.UpdateResources();
                 break;
 
 
@@ -186,7 +187,6 @@ public class CardController : MonoBehaviour
 
         if (target != null)
         {
-            target.AbilityController.OnCast();
             target.CheckIfAlive();
         }
         Debug.Log("Destroying Card");

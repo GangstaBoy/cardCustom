@@ -22,7 +22,8 @@ public class CardAbility : MonoBehaviour
         DAMAGE_HERO_ON_CAST,
         MANA_ON_CAST,
         HEAL_ALLY_FIELD_CARDS_ON_CAST,
-        HEAL_ALLY_FIELD_CARDS_EACH_TURN
+        HEAL_ALLY_FIELD_CARDS_EACH_TURN,
+        LIFESTEAL
 
     }
 
@@ -140,6 +141,10 @@ public class CardAbility : MonoBehaviour
 
                         if (CardController.IsPlayerCard) CardController.Info.HighlightCard(true);
                     }
+                    break;
+
+                case abilityType.LIFESTEAL:
+                    CardController.RegenCardHP(CardController, ability.AbilityValue);
                     break;
 
                 default: break;
