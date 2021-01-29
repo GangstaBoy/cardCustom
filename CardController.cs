@@ -160,7 +160,10 @@ public class CardController : MonoBehaviour
 
             case SpellCard.SpellType.PROVOCATION_ON_ALLY_CARD:
                 if (!target.Card.Abilities.Exists(x => x.AbilityType == CardAbility.abilityType.PROVOCATION))
+                {
                     target.Card.Abilities.Add(new CardAbility(CardAbility.abilityType.PROVOCATION));
+                    target.AbilityController.Provocation.SetActive(true);
+                }
                 break;
 
             case SpellCard.SpellType.DOUBLE_ATTACK_ON_ALLY_CARD:
@@ -170,7 +173,10 @@ public class CardController : MonoBehaviour
 
             case SpellCard.SpellType.SHIELD_ON_ALLY_CARD:
                 if (!target.Card.Abilities.Exists(x => x.AbilityType == CardAbility.abilityType.HOLY_SHIELD))
+                {
                     target.Card.Abilities.Add(new CardAbility(CardAbility.abilityType.HOLY_SHIELD));
+                    target.AbilityController.Shield.SetActive(true);
+                }
                 break;
 
             case SpellCard.SpellType.DAMAGE_CARD:

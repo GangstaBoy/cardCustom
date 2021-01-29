@@ -10,14 +10,14 @@ public class DeckController : MonoBehaviour, IPointerClickHandler
 
     public void customDeck()
     {
-        Card card = CardManager.AllCards.Find(x => x.Name == "guild assasin");
+        Card card = CardManager.AllCards.Find(x => x.Name == "crusader commander");
         if (card.IsSpell) Cards.Add(((SpellCard)card).GetCopy());
         else Cards.Add(card.GetCopy());
-        SpellCard spellCard = (SpellCard)CardManager.AllCards.Find(x => x.Name == "lightning");
+        SpellCard spellCard = (SpellCard)CardManager.AllCards.Find(x => x.Name == "magic shield");
         if (spellCard.IsSpell) Cards.Add(((SpellCard)spellCard).GetCopy());
-        spellCard = (SpellCard)CardManager.AllCards.Find(x => x.Name == "mana-potion");
+        spellCard = (SpellCard)CardManager.AllCards.Find(x => x.Name == "mana potion");
         if (spellCard.IsSpell) Cards.Add(((SpellCard)spellCard).GetCopy());
-        spellCard = (SpellCard)CardManager.AllCards.Find(x => x.Name == "mana-potion");
+        spellCard = (SpellCard)CardManager.AllCards.Find(x => x.Name == "mana potion");
         if (spellCard.IsSpell) Cards.Add(((SpellCard)spellCard).GetCopy());
         spellCard = (SpellCard)CardManager.AllCards.Find(x => x.Name == "healing spell");
         if (spellCard.IsSpell) Cards.Add(((SpellCard)spellCard).GetCopy());
@@ -27,7 +27,7 @@ public class DeckController : MonoBehaviour, IPointerClickHandler
         if (spellCard.IsSpell) Cards.Add(((SpellCard)spellCard).GetCopy());
         spellCard = (SpellCard)CardManager.AllCards.Find(x => x.Name == "magic shield");
         if (spellCard.IsSpell) Cards.Add(((SpellCard)spellCard).GetCopy());
-        spellCard = (SpellCard)CardManager.AllCards.Find(x => x.Name == "mana-potion");
+        spellCard = (SpellCard)CardManager.AllCards.Find(x => x.Name == "mana potion");
         if (spellCard.IsSpell) Cards.Add(((SpellCard)spellCard).GetCopy());
 
 

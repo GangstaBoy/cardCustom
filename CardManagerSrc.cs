@@ -98,7 +98,6 @@ public class Card
         {
             if (Abilities.Exists(x => x.AbilityType == CardAbility.abilityType.HOLY_SHIELD))
             {
-                Debug.Log("Shield is found");
                 Abilities.RemoveAll(x => x.AbilityType == CardAbility.abilityType.HOLY_SHIELD);
             }
             else
