@@ -30,7 +30,6 @@ public class AI : MonoBehaviour
                     card.transform.SetParent(GameManagerScr.Instance.EnemyField);
                     card.OnCast();
                 }
-                Debug.Log("Playing end: " + card.Card.Name);
             }
             else
             {

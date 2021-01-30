@@ -14,6 +14,7 @@ public class CardInfoScript : MonoBehaviour
     public TextMeshProUGUI Manacost;
     public TextMeshProUGUI Goldcost;
     public GameObject HideObj, HighlightedObj;
+    public GameObject Shield, Provocation;
     public bool CanAttack;
     public Color NormalCol, TargetCol, SpellTargetCol;
 

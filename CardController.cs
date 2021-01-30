@@ -21,8 +21,8 @@ public class CardController : MonoBehaviour
         Card = card;
         GameManager = GameManagerScr.Instance;
         IsPlayerCard = isPlayerCard;
-        AbilityController.Shield.SetActive(false);
-        AbilityController.Provocation.SetActive(false);
+        Info.Shield.SetActive(false);
+        Info.Provocation.SetActive(false);
 
         if (isPlayerCard)
         {
@@ -164,7 +164,7 @@ public class CardController : MonoBehaviour
                 if (!target.Card.Abilities.Exists(x => x.AbilityType == CardAbility.abilityType.PROVOCATION))
                 {
                     target.Card.Abilities.Add(new CardAbility(CardAbility.abilityType.PROVOCATION));
-                    target.AbilityController.Provocation.SetActive(true);
+                    target.Info.Provocation.SetActive(true);
                 }
                 break;
 
@@ -175,11 +175,6 @@ public class CardController : MonoBehaviour
 
             case SpellCard.SpellType.SHIELD_ON_ALLY_CARD:
                 GameManager.CreateBuffPref(target, BuffsManager.GetBuff("magic shield"));
-                if (!target.Card.Abilities.Exists(x => x.AbilityType == CardAbility.abilityType.HOLY_SHIELD))
-                {
-                    target.Card.Abilities.Add(new CardAbility(CardAbility.abilityType.HOLY_SHIELD));
-                    target.AbilityController.Shield.SetActive(true);
-                }
                 break;
 
             case SpellCard.SpellType.DAMAGE_CARD:
@@ -198,19 +193,33 @@ public class CardController : MonoBehaviour
         {
             target.CheckIfAlive();
         }
-        Debug.Log("Destroying Card");
         DestroyCard();
     }
 
 
     public void GiveDamageTo(CardController card, int damage)
     {
-        if (!card.Card.Abilities.Exists(x => x.AbilityType == CardAbility.abilityType.HOLY_SHIELD)) // fix here not to check twice
+        if (!card.StatusBars.Buffs.Exists(x => x.Buff.BuffType == BuffType.HOLY_SHIELD)) // fix here not to check twice
             ShowCardHPChangedEvent(card, damage, true);
-        card.Card.GetDamage(damage);
+        card.GetDamage(damage);
 
         card.OnTakeDamage();
         card.CheckIfAlive();
+    }
+
+    public void GetDamage(int damage)
+    {
+        if (damage > 0)
+        {
+            if (StatusBars.Buffs.Exists(x => x.Buff.BuffType == BuffType.HOLY_SHIELD))
+            {
+                StatusBars.Remove(StatusBars.Buffs.Find(x => x.Buff.BuffType == BuffType.HOLY_SHIELD));
+            }
+            else
+            {
+                Card.Defense -= damage;
+            }
+        }
     }
 
     public void RegenCardHP(CardController card, int regenAmount)

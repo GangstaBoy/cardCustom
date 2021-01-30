@@ -28,7 +28,6 @@ public class CardAbility : MonoBehaviour
     }
 
     public CardController CardController;
-    public GameObject Shield, Provocation;
     public int AbilityValue;
     public abilityType AbilityType;
 
@@ -63,11 +62,11 @@ public class CardAbility : MonoBehaviour
                     break;
 
                 case abilityType.HOLY_SHIELD:
-                    Shield.SetActive(true);
+                    CardController.Info.Shield.SetActive(true);
                     break;
 
                 case abilityType.PROVOCATION:
-                    Provocation.SetActive(true);
+                    CardController.Info.Provocation.SetActive(true);
                     break;
 
                 case abilityType.HEAL_ALLY_FIELD_CARDS_ON_CAST:
@@ -154,15 +153,10 @@ public class CardAbility : MonoBehaviour
 
     public void OnTakeDamage(CardController attacker = null)
     {
-        Shield.SetActive(false);
         foreach (var ability in CardController.Card.Abilities)
         {
             switch (ability.AbilityType)
             {
-                case abilityType.HOLY_SHIELD:
-                    Shield.SetActive(true);
-                    break;
-
                 case abilityType.DECREASE_ATTACK_ON_ATTACK:
                     if (attacker != null) attacker.Card.Attack--;
                     break;

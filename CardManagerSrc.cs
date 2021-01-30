@@ -11,7 +11,6 @@ public class Card
     public bool IsPlaced;
 
     public List<CardAbility> Abilities;
-    public List<BuffController> Buffs;
 
     public bool IsSpell;
     public bool IsAlive
@@ -59,7 +58,6 @@ public class Card
         TimesDealDamage = TimesTookDamage = 0;
 
         Abilities = new List<CardAbility>();
-        Buffs = new List<BuffController>();
 
         if (abilities != null || abilities.Count > 0)
         {
@@ -92,22 +90,6 @@ public class Card
         }
     }
 
-
-
-    public void GetDamage(int damage)
-    {
-        if (damage > 0)
-        {
-            if (Abilities.Exists(x => x.AbilityType == CardAbility.abilityType.HOLY_SHIELD))
-            {
-                Abilities.RemoveAll(x => x.AbilityType == CardAbility.abilityType.HOLY_SHIELD);
-            }
-            else
-            {
-                Defense -= damage;
-            }
-        }
-    }
 
     public Card GetCopy()
     {
@@ -210,7 +192,7 @@ public class CardManagerSrc : MonoBehaviour
 
         CardManager.AllCards.Add(new Card("crusader", "Sprites/Cards/crusader", 4, 8, 1, 7, new List<CardAbility> { new CardAbility(CardAbility.abilityType.HOLY_SHIELD) }));
         CardManager.AllCards.Add(new Card("divine mistress", "Sprites/Cards/divine-mistress", 5, 15, 3, 12, new List<CardAbility> { new CardAbility(CardAbility.abilityType.HOLY_SHIELD), new CardAbility(CardAbility.abilityType.REGENERATION_EACH_TURN, 1), new CardAbility(CardAbility.abilityType.DAMAGE_EACH_TURN, 1) }));
-        CardManager.AllCards.Add(new Card("crusader commander", "Sprites/Cards/crusader-commander", 6, 12, 2, 9, new List<CardAbility> { new CardAbility(CardAbility.abilityType.HOLY_SHIELD), new CardAbility(CardAbility.abilityType.REGENERATION_EACH_TURN, 1) }));
+        CardManager.AllCards.Add(new Card("crusader commander", "Sprites/Cards/crusader-commander", 6, 12, 2, 9, new List<CardAbility> { new CardAbility(CardAbility.abilityType.REGENERATION_EACH_TURN, 1) }));
         CardManager.AllCards.Add(new Card("crusader general", "Sprites/Cards/crusader-general", 6, 20, 4, 18, new List<CardAbility> { new CardAbility(CardAbility.abilityType.HOLY_SHIELD), new CardAbility(CardAbility.abilityType.REGENERATION_EACH_TURN, 3), new CardAbility(CardAbility.abilityType.PROVOCATION), new CardAbility(CardAbility.abilityType.DECREASE_ATTACK_ON_ATTACK) }));
         // CardManager.AllCards.Add(new Card("wild werewolf", "Sprites/Cards/wild-werewolf", 4, 7, 0, 5, new List<CardAbility> {new CardAbility(CardAbility.abilityType.INSTANT_ACTIVE, new CardAbility(CardAbility.abilityType.REGENERATION_EACH_TURN, new CardAbility(CardAbility.abilityType.DECREASE_ATTACK_ON_ATTACK}));
 

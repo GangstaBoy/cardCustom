@@ -13,7 +13,6 @@ public class StatusBars : MonoBehaviour
         BuffBar = buffBar;
         DebuffBar = debuffBar;
     }
-
     public void InitializeStatusBars()
     {
         Buffs = new List<BuffController>();
@@ -21,13 +20,22 @@ public class StatusBars : MonoBehaviour
     }
     public void Add(BuffController buffController, bool isBuff = true)
     {
-        if (isBuff) Buffs.Add(buffController);
+        if (isBuff)
+        {
+            Buffs.Add(buffController);
+            buffController.OnAdd();
+        }
         else Debuffs.Add(buffController);
     }
 
     public void Remove(BuffController buffController, bool isBuff = true)
     {
-        if (isBuff) Buffs.Remove(buffController);
+        if (isBuff)
+        {
+            Buffs.Remove(buffController);
+            buffController.OnRemove();
+            Destroy(buffController.BuffBehaviour.gameObject);
+        }
         else Debuffs.Remove(buffController);
         buffController.BuffGameobject.SetActive(false);
     }

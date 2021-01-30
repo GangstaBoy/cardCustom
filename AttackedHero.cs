@@ -18,7 +18,7 @@ public class AttackedHero : MonoBehaviour, IDropHandler
     public List<Sprite> Icons;
     public Color TargetCol, NormalCol;
 
-    void Start() 
+    void Start()
     {
         HeroIcon.sprite = Icons[Random.Range(0, Icons.Count)];
         HeroIcon.preserveAspect = true;
@@ -26,13 +26,13 @@ public class AttackedHero : MonoBehaviour, IDropHandler
 
     public void OnDrop(PointerEventData eventData)
     {
-        if(!GameManagerScr.Instance.IsPlayerTurn) return;
+        if (!GameManagerScr.Instance.IsPlayerTurn) return;
 
         CardController card = eventData.pointerDrag.GetComponent<CardController>();
 
-        if(GameManagerScr.Instance.EnemyFieldCards.Count > 0 && !card.Card.Ranged) return;
+        if (GameManagerScr.Instance.EnemyFieldCards.Count > 0 && !card.Card.Ranged) return;
 
-        if (card && card.Info.CanAttack && Type == HeroType.ENEMY 
+        if (card && card.Info.CanAttack && Type == HeroType.ENEMY
         && (!GameManagerScr.Instance.EnemyFieldCards.Exists(x => x.Card.IsProvocation)))
         {
             GameManagerScr.Instance.DamageHero(card, true);
@@ -40,47 +40,47 @@ public class AttackedHero : MonoBehaviour, IDropHandler
 
     }
 
-    public void HighlightAsTarget (bool highlight)
+    public void HighlightAsTarget(bool highlight)
     {
         GetComponent<Image>().color = highlight ? TargetCol : NormalCol;
     }
 
     public void ShowHeroHPChangedEvent(AttackedHero hero, int damageAmount, bool damage)
-     {
+    {
         Transform startPoint = hero.transform.Find("Health").Find("HPTooltipBase");
         startPoint.DetachChildren();
         TextMeshProUGUI tooltipBase = damage ? GameObject.Find("DamageTooltip").GetComponent<TextMeshProUGUI>() : GameObject.Find("HPRegenTooltip").GetComponent<TextMeshProUGUI>();
         TextMeshProUGUI tooltip = Instantiate(tooltipBase, startPoint, false);
         tooltip.text = damage ? "-" + damageAmount.ToString() + "!" : "+" + damageAmount.ToString();
         tooltip.fontSize = 40;
-        Debug.Log("Inside: " + startPoint.name + " " + tooltipBase + " " + tooltip + ". Text: " + tooltip.text);
+        //Debug.Log("Inside: " + startPoint.name + " " + tooltipBase + " " + tooltip + ". Text: " + tooltip.text);
         tooltip.transform.SetParent(startPoint);
         Destroy(tooltip.gameObject, 1);
-     }
+    }
 
-     public void ShowHeroMPChangedEvent(AttackedHero hero, int amount)
-     {
+    public void ShowHeroMPChangedEvent(AttackedHero hero, int amount)
+    {
         Transform startPoint = hero.transform.Find("Mana").Find("ManaTooltipBase");
         startPoint.DetachChildren();
         TextMeshProUGUI tooltipBase = GameObject.Find("MPRegenTooltip").GetComponent<TextMeshProUGUI>();
         TextMeshProUGUI tooltip = Instantiate(tooltipBase, startPoint, false);
         tooltip.text = "+" + amount.ToString();
         tooltip.fontSize = 40;
-        Debug.Log("Inside: " + startPoint.name + " " + tooltipBase + " " + tooltip + ". Text: " + tooltip.text);
+        //Debug.Log("Inside: " + startPoint.name + " " + tooltipBase + " " + tooltip + ". Text: " + tooltip.text);
         tooltip.transform.SetParent(startPoint);
         Destroy(tooltip.gameObject, 1);
-     }
+    }
 
     public void ShowHeroGoldChangedEvent(AttackedHero hero, int amount)
-     {
+    {
         Transform startPoint = hero.transform.Find("Gold").Find("GoldTooltipBase");
         startPoint.DetachChildren();
         TextMeshProUGUI tooltipBase = GameObject.Find("GoldRegenTooltip").GetComponent<TextMeshProUGUI>();
         TextMeshProUGUI tooltip = Instantiate(tooltipBase, startPoint, false);
         tooltip.fontSize = 40;
         tooltip.text = "+" + amount.ToString();
-        Debug.Log("Inside: " + startPoint.name + " " + tooltipBase + " " + tooltip + ". Text: " + tooltip.text);
+        //Debug.Log("Inside: " + startPoint.name + " " + tooltipBase + " " + tooltip + ". Text: " + tooltip.text);
         tooltip.transform.SetParent(startPoint);
         Destroy(tooltip.gameObject, 1);
-     }
+    }
 }

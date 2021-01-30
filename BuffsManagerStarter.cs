@@ -3,24 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Buff : MonoBehaviour
+public class Buff
 {
     public string Name;
-    //public List<KeyValuePair<BuffType, int>> BuffEffects;
+    public BuffType BuffType;
+    public int BuffValue;
     public string LogoPath;
 
-    public Buff(string name/*, List<KeyValuePair<BuffType, int>> buffEffects*/, string logo)
+    public Buff(string name, string logo, BuffType buffType, int buffValue = 0)
     {
         Name = name;
-        //BuffEffects = buffEffects;
         LogoPath = logo;
+        BuffType = buffType;
+        BuffValue = buffValue;
     }
 
     public Buff(Buff buff)
     {
         Name = buff.Name;
-        //BuffEffects = buff.BuffEffects;
         LogoPath = buff.LogoPath;
+        BuffType = buff.BuffType;
+        BuffValue = buff.BuffValue;
     }
 
     public Buff GetCopy()
@@ -74,8 +77,8 @@ public class BuffsManagerStarter : MonoBehaviour
 {
     void Awake()
     {
-        BuffsManager.AllBuffs.Add(new Buff("fire arms"/*, new List<KeyValuePair<BuffType, int>> { new KeyValuePair<BuffType, int>(BuffType.DAMAGE_INCREASE, 5) }*/, "Sprites/Cards/double-attack"));
-        BuffsManager.AllBuffs.Add(new Buff("magic shield"/*, new List<KeyValuePair<BuffType, int>> { new KeyValuePair<BuffType, int>(BuffType.DAMAGE_INCREASE, 5) }*/, "Sprites/Cards/magic-shield"));
+        //BuffsManager.AllBuffs.Add(new Buff("fire arms", "Sprites/Cards/double-attack"));
+        BuffsManager.AllBuffs.Add(new Buff("magic shield", "Sprites/Cards/magic-shield", BuffType.HOLY_SHIELD));
     }
 }
 
