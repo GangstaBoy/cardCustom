@@ -10,6 +10,8 @@ public class CardController : MonoBehaviour
     public bool IsPlayerCard;
     public CardInfoScript Info;
     public CardMovementScript Movement;
+    public BuffFactory BuffFactory;
+    public StatusBars StatusBars;
 
     GameManagerScr GameManager;
 
@@ -33,7 +35,7 @@ public class CardController : MonoBehaviour
     public void OnCast()
     {
         //if (Card.IsSpell && ((SpellCard)Card).SpellTarget != SpellCard.TargetType.NO_TARGET) return;
-
+        StatusBars.InitializeStatusBars();
         if (IsPlayerCard)
         {
             GameManager.PlayerHandCards.Remove(this);
@@ -172,6 +174,7 @@ public class CardController : MonoBehaviour
                 break;
 
             case SpellCard.SpellType.SHIELD_ON_ALLY_CARD:
+                GameManager.CreateBuffPref(target, BuffsManager.GetBuff("magic shield"));
                 if (!target.Card.Abilities.Exists(x => x.AbilityType == CardAbility.abilityType.HOLY_SHIELD))
                 {
                     target.Card.Abilities.Add(new CardAbility(CardAbility.abilityType.HOLY_SHIELD));

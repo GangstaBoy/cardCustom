@@ -17,7 +17,7 @@ public class DeckController : MonoBehaviour, IPointerClickHandler
         if (spellCard.IsSpell) Cards.Add(((SpellCard)spellCard).GetCopy());
         spellCard = (SpellCard)CardManager.AllCards.Find(x => x.Name == "mana potion");
         if (spellCard.IsSpell) Cards.Add(((SpellCard)spellCard).GetCopy());
-        spellCard = (SpellCard)CardManager.AllCards.Find(x => x.Name == "mana potion");
+        spellCard = (SpellCard)CardManager.AllCards.Find(x => x.Name == "magic shield");
         if (spellCard.IsSpell) Cards.Add(((SpellCard)spellCard).GetCopy());
         spellCard = (SpellCard)CardManager.AllCards.Find(x => x.Name == "healing spell");
         if (spellCard.IsSpell) Cards.Add(((SpellCard)spellCard).GetCopy());

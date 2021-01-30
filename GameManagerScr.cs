@@ -33,7 +33,7 @@ public class GameManagerScr : MonoBehaviour
     public static GameManagerScr Instance;
     public Game CurrentGame;
     public Transform PlayerHand, EnemyHand, EnemyField, PlayerField;
-    public GameObject CardPref;
+    public GameObject CardPref, StatePref;
     int Turn, TurnTime = 30;
 
     public AttackedHero EnemyHero, PlayerHero;
@@ -77,6 +77,13 @@ public class GameManagerScr : MonoBehaviour
 
         if (CardC.IsPlayerCard) PlayerHandCards.Add(CardC);
         else EnemyHandCards.Add(CardC);
+    }
+
+    public void CreateBuffPref(CardController card, Buff buff)
+    {
+        GameObject buffGO = Instantiate(StatePref, card.StatusBars.BuffBar.transform, false);
+        BuffFactory buffFactory = card.GetComponent<BuffFactory>();
+        buffFactory.Init(buff, buffGO);
     }
 
     IEnumerator TurnFunc()

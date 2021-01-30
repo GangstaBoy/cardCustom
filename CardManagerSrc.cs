@@ -11,6 +11,7 @@ public class Card
     public bool IsPlaced;
 
     public List<CardAbility> Abilities;
+    public List<BuffController> Buffs;
 
     public bool IsSpell;
     public bool IsAlive
@@ -58,6 +59,7 @@ public class Card
         TimesDealDamage = TimesTookDamage = 0;
 
         Abilities = new List<CardAbility>();
+        Buffs = new List<BuffController>();
 
         if (abilities != null || abilities.Count > 0)
         {
