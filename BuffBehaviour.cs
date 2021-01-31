@@ -10,6 +10,9 @@ public class BuffBehaviour : MonoBehaviour
     public GameObject ValueToken;
     public TextMeshProUGUI ValueText;
     Buff Buff;
+
+    public string BuffDescription { get => Buff.Name; }
+
     public void Init(Buff buff)
     {
         Logo.sprite = Resources.Load<Sprite>(buff.LogoPath);
