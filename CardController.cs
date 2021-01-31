@@ -181,6 +181,10 @@ public class CardController : MonoBehaviour
                 GameManager.CreateBuffPref(target, BuffsManager.GetBuff("healing aura"), spellCard.SpellValue);
                 break;
 
+            case SpellCard.SpellType.FIRE_SHIELD_ON_CARD:
+                GameManager.CreateBuffPref(target, BuffsManager.GetBuff("fire shield"), spellCard.SpellValue);
+                break;
+
             case SpellCard.SpellType.ARMOR_ON_CARD:
                 GameManager.CreateBuffPref(target, BuffsManager.GetBuff("armor"), spellCard.SpellValue);
                 break;

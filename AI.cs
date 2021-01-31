@@ -179,6 +179,22 @@ public class AI : MonoBehaviour
                         }
                         else return false;
 
+                    case SpellCard.SpellType.REGENERATION_AURA_ON_CARD:
+                        if (GameManagerScr.Instance.EnemyFieldCards.Count > 0)
+                        {
+                            StartCoroutine(CastCard(card, GameManagerScr.Instance.EnemyFieldCards[Random.Range(0, GameManagerScr.Instance.EnemyFieldCards.Count)]));
+                            return true;
+                        }
+                        else return false;
+
+                    case SpellCard.SpellType.FIRE_SHIELD_ON_CARD:
+                        if (GameManagerScr.Instance.EnemyFieldCards.Count > 0)
+                        {
+                            StartCoroutine(CastCard(card, GameManagerScr.Instance.EnemyFieldCards[Random.Range(0, GameManagerScr.Instance.EnemyFieldCards.Count)]));
+                            return true;
+                        }
+                        else return false;
+
                     case SpellCard.SpellType.SHIELD_ON_ALLY_CARD:
                         if (GameManagerScr.Instance.EnemyFieldCards.Count > 0)
                         {

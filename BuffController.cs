@@ -84,6 +84,25 @@ public class BuffController
     {
         switch (Buff.BuffType)
         {
+            case BuffType.FIRE_SHIELD:
+                if (CardController.IsPlayerCard && GameManagerScr.Instance.EnemyFieldCards.Count > 0)
+                {
+                    for (int i = GameManagerScr.Instance.EnemyFieldCards.Count - 1; i >= 0; i--)
+                    {
+                        CardController.GiveDamageTo(GameManagerScr.Instance.EnemyFieldCards[i], Buff.BuffValue.Value);
+
+                    }
+                }
+                else if (!CardController.IsPlayerCard && GameManagerScr.Instance.PlayerFieldCards.Count > 0)
+                {
+                    for (int i = GameManagerScr.Instance.PlayerFieldCards.Count - 1; i >= 0; i--)
+                    {
+                        CardController.GiveDamageTo(GameManagerScr.Instance.PlayerFieldCards[i], Buff.BuffValue.Value);
+
+                    }
+                }
+                break;
+
             case BuffType.SELF_HP_REGENERATION:
                 int regenAmount = Buff.BuffValue == null ? 0 : Buff.BuffValue.Value;
                 CardController.RegenCardHP(CardController, regenAmount);

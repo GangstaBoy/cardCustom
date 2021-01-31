@@ -13,10 +13,10 @@ public class DeckController : MonoBehaviour, IPointerClickHandler
         Card card = CardManager.AllCards.Find(x => x.Name == "scarecrow");
         if (card.IsSpell) Cards.Add(((SpellCard)card).GetCopy());
         else Cards.Add(card.GetCopy());
-        card = CardManager.AllCards.Find(x => x.Name == "gnome healer");
+        card = CardManager.AllCards.Find(x => x.Name == "divine mistress");
         if (card.IsSpell) Cards.Add(((SpellCard)card).GetCopy());
         else Cards.Add(card.GetCopy());
-        SpellCard spellCard = (SpellCard)CardManager.AllCards.Find(x => x.Name == "healing aura");
+        SpellCard spellCard = (SpellCard)CardManager.AllCards.Find(x => x.Name == "fire shield");
         if (spellCard.IsSpell) Cards.Add(((SpellCard)spellCard).GetCopy());
         spellCard = (SpellCard)CardManager.AllCards.Find(x => x.Name == "regeneration");
         if (spellCard.IsSpell) Cards.Add(((SpellCard)spellCard).GetCopy());

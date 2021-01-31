@@ -42,7 +42,8 @@ public enum BuffType
     DOUBLE_ATTACK,
     SELF_HP_REGENERATION,
     NEARBY_ALLIES_REGENERATION,
-    ALL_ALLIES_REGENERATION
+    ALL_ALLIES_REGENERATION,
+    FIRE_SHIELD
 }
 
 
@@ -85,6 +86,7 @@ public class BuffsManagerStarter : MonoBehaviour
         BuffsManager.AllBuffs.Add(new Buff("armor", "Sprites/Cards/armor", BuffType.ARMOR));
         BuffsManager.AllBuffs.Add(new Buff("regeneration", "Sprites/Cards/regeneration", BuffType.SELF_HP_REGENERATION));
         BuffsManager.AllBuffs.Add(new Buff("healing aura", "Sprites/Cards/heal-allies-buff", BuffType.ALL_ALLIES_REGENERATION));
+        BuffsManager.AllBuffs.Add(new Buff("fire shield", "Sprites/Cards/fire-shield", BuffType.FIRE_SHIELD));
     }
 }
 

@@ -15,8 +15,8 @@ public class Game
         Player = new Player();
         Enemy = new Player();
         GameManagerScr.Instance.EnemyDeck.RandomizeDeck(25);
-        //GameManagerScr.Instance.PlayerDeck.RandomizeDeck(25);
-        GameManagerScr.Instance.PlayerDeck.customDeck();
+        GameManagerScr.Instance.PlayerDeck.RandomizeDeck(25);
+        //GameManagerScr.Instance.PlayerDeck.customDeck();
         //SpellCard card = (SpellCard)CardManager.AllCards.Find(x => x.Name == "mana potion");
         //EnemyDeck = new List<Card>{card.GetCopy(), card.GetCopy(), card.GetCopy()};
         //PlayerDeck = new List<Card>{card.GetCopy(), card.GetCopy(), card.GetCopy()};
