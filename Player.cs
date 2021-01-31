@@ -5,7 +5,7 @@ public class Player
 {
     public int HP, Mana, ManaRate, Gold, GoldRate;
 
-    public Player(int hp = 20, int mp = 0, int gold = 20, int goldRate = 3, int manaRate = 2)
+    public Player(int hp = 20, int mp = 100, int gold = 20, int goldRate = 3, int manaRate = 2)
     {
         HP = hp;
         Mana = mp;

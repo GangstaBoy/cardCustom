@@ -12,6 +12,13 @@ public class CardController : MonoBehaviour
     public CardMovementScript Movement;
     public BuffFactory BuffFactory;
     public StatusBars StatusBars;
+    public bool IsProvocation
+    {
+        get
+        {
+            return StatusBars.Buffs.Exists(x => x.Buff.BuffType == BuffType.PROVOCATION);
+        }
+    }
 
     GameManagerScr GameManager;
 
@@ -69,6 +76,7 @@ public class CardController : MonoBehaviour
         Info.HighlightCard(false);
 
         if (Card.HasAbility) AbilityController.OnDamageDeal();
+        StatusBars.TriggerDamageDeal();
     }
 
     public void UseSpell(CardController target)
@@ -161,16 +169,25 @@ public class CardController : MonoBehaviour
 
 
             case SpellCard.SpellType.PROVOCATION_ON_ALLY_CARD:
-                if (!target.Card.Abilities.Exists(x => x.AbilityType == CardAbility.abilityType.PROVOCATION))
-                {
-                    target.Card.Abilities.Add(new CardAbility(CardAbility.abilityType.PROVOCATION));
-                    target.Info.Provocation.SetActive(true);
-                }
+                if (!target.StatusBars.Buffs.Exists(x => x.Buff.BuffType == BuffType.PROVOCATION))
+                    GameManager.CreateBuffPref(target, BuffsManager.GetBuff("provocation"));
+                break;
+
+            case SpellCard.SpellType.REGENERATION_ON_CARD:
+                GameManager.CreateBuffPref(target, BuffsManager.GetBuff("regeneration"), spellCard.SpellValue);
+                break;
+
+            case SpellCard.SpellType.REGENERATION_AURA_ON_CARD:
+                GameManager.CreateBuffPref(target, BuffsManager.GetBuff("healing aura"), spellCard.SpellValue);
+                break;
+
+            case SpellCard.SpellType.ARMOR_ON_CARD:
+                GameManager.CreateBuffPref(target, BuffsManager.GetBuff("armor"), spellCard.SpellValue);
                 break;
 
             case SpellCard.SpellType.DOUBLE_ATTACK_ON_ALLY_CARD:
-                if (!target.Card.Abilities.Exists(x => x.AbilityType == CardAbility.abilityType.DOUBLE_ATTACK))
-                    target.Card.Abilities.Add(new CardAbility(CardAbility.abilityType.DOUBLE_ATTACK));
+                if (!target.StatusBars.Buffs.Exists(x => x.Buff.BuffType == BuffType.DOUBLE_ATTACK))
+                    GameManager.CreateBuffPref(target, BuffsManager.GetBuff("double attack"));
                 break;
 
             case SpellCard.SpellType.SHIELD_ON_ALLY_CARD:
@@ -207,13 +224,25 @@ public class CardController : MonoBehaviour
         card.CheckIfAlive();
     }
 
-    public void GetDamage(int damage)
+    public void GetDamage(int damage, bool isPure = false)
     {
         if (damage > 0)
         {
             if (StatusBars.Buffs.Exists(x => x.Buff.BuffType == BuffType.HOLY_SHIELD))
             {
-                StatusBars.Remove(StatusBars.Buffs.Find(x => x.Buff.BuffType == BuffType.HOLY_SHIELD));
+                var shield = StatusBars.Buffs.Find(x => x.Buff.BuffType == BuffType.HOLY_SHIELD);
+                if (shield.Buff.BuffValue == 1) StatusBars.Remove(StatusBars.Buffs.Find(x => x.Buff.BuffType == BuffType.HOLY_SHIELD));
+                else shield.Buff.BuffValue--;
+            }
+            else if (StatusBars.Buffs.Exists(x => x.Buff.BuffType == BuffType.ARMOR) && !isPure)
+            {
+                var armor = StatusBars.Buffs.Find(x => x.Buff.BuffType == BuffType.ARMOR);
+                if (armor.Buff.BuffValue < damage)
+                {
+                    StatusBars.Remove(StatusBars.Buffs.Find(x => x.Buff.BuffType == BuffType.ARMOR));
+                    this.GetDamage(damage - armor.Buff.BuffValue.GetValueOrDefault());
+                }
+                else armor.Buff.BuffValue -= damage;
             }
             else
             {

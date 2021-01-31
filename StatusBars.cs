@@ -18,6 +18,24 @@ public class StatusBars : MonoBehaviour
         Buffs = new List<BuffController>();
         Debuffs = new List<BuffController>();
     }
+
+    public void TriggerDamageDeal()
+    {
+        if (Buffs.Count > 0)
+        {
+            foreach (var buff in Buffs)
+            {
+                buff.OnDamageDeal();
+            }
+        }
+        if (Debuffs.Count > 0)
+        {
+            foreach (var debuff in Debuffs)
+            {
+                debuff.OnDamageDeal();
+            }
+        }
+    }
     public void Add(BuffController buffController, bool isBuff = true)
     {
         if (isBuff)
@@ -38,5 +56,16 @@ public class StatusBars : MonoBehaviour
         }
         else Debuffs.Remove(buffController);
         buffController.BuffGameobject.SetActive(false);
+    }
+    public void OnNewTurn()
+    {
+        foreach (var buff in Buffs)
+        {
+            buff.OnNewTurn();
+        }
+        foreach (var debuff in Debuffs)
+        {
+            debuff.OnNewTurn();
+        }
     }
 }

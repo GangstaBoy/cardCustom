@@ -79,11 +79,10 @@ public class GameManagerScr : MonoBehaviour
         else EnemyHandCards.Add(CardC);
     }
 
-    public void CreateBuffPref(CardController card, Buff buff)
+    public void CreateBuffPref(CardController card, Buff buff, int? buffValue = null)   //todo: get rid of this
     {
-        GameObject buffGO = Instantiate(StatePref, card.StatusBars.BuffBar.transform, false);
         BuffFactory buffFactory = card.GetComponent<BuffFactory>();
-        buffFactory.Init(buff, buffGO);
+        buffFactory.Init(buff, StatePref, buffValue);
     }
 
     IEnumerator TurnFunc()
@@ -99,12 +98,13 @@ public class GameManagerScr : MonoBehaviour
         {
             foreach (var card in PlayerFieldCards)
             {
-                if (card.Card.Attack > 0 && !card.Card.Name.Contains("wall"))
+                if (card.Card.Attack > 0)
                 {
                     card.Info.CanAttack = true;
                     card.Info.HighlightCard(true);
-                    card.AbilityController.OnNewTurn();
                 }
+                card.AbilityController.OnNewTurn();
+                card.StatusBars.OnNewTurn();
 
             }
 
@@ -120,7 +120,8 @@ public class GameManagerScr : MonoBehaviour
         {
             foreach (var card in EnemyFieldCards)
             {
-                if (card.Card.Attack > 0 && !card.Card.Name.Contains("wall")) card.Info.CanAttack = true;
+                if (card.Card.Attack > 0) card.Info.CanAttack = true;
+                card.StatusBars.OnNewTurn();
                 card.AbilityController.OnNewTurn();
             }
 
@@ -260,8 +261,8 @@ public class GameManagerScr : MonoBehaviour
 
         else
         {
-            if (EnemyFieldCards.Exists(x => x.Card.IsProvocation) && !activeCard.Ranged)
-                targets = EnemyFieldCards.FindAll(x => x.Card.IsProvocation);
+            if (EnemyFieldCards.Exists(x => x.IsProvocation) && !activeCard.Ranged)
+                targets = EnemyFieldCards.FindAll(x => x.IsProvocation);
             else targets = EnemyFieldCards;
         }
 

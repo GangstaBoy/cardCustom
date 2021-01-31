@@ -10,16 +10,19 @@ public class DeckController : MonoBehaviour, IPointerClickHandler
 
     public void customDeck()
     {
-        Card card = CardManager.AllCards.Find(x => x.Name == "crusader commander");
+        Card card = CardManager.AllCards.Find(x => x.Name == "scarecrow");
         if (card.IsSpell) Cards.Add(((SpellCard)card).GetCopy());
         else Cards.Add(card.GetCopy());
-        SpellCard spellCard = (SpellCard)CardManager.AllCards.Find(x => x.Name == "magic shield");
+        card = CardManager.AllCards.Find(x => x.Name == "gnome healer");
+        if (card.IsSpell) Cards.Add(((SpellCard)card).GetCopy());
+        else Cards.Add(card.GetCopy());
+        SpellCard spellCard = (SpellCard)CardManager.AllCards.Find(x => x.Name == "healing aura");
         if (spellCard.IsSpell) Cards.Add(((SpellCard)spellCard).GetCopy());
-        spellCard = (SpellCard)CardManager.AllCards.Find(x => x.Name == "mana potion");
+        spellCard = (SpellCard)CardManager.AllCards.Find(x => x.Name == "regeneration");
         if (spellCard.IsSpell) Cards.Add(((SpellCard)spellCard).GetCopy());
         spellCard = (SpellCard)CardManager.AllCards.Find(x => x.Name == "magic shield");
         if (spellCard.IsSpell) Cards.Add(((SpellCard)spellCard).GetCopy());
-        spellCard = (SpellCard)CardManager.AllCards.Find(x => x.Name == "healing spell");
+        spellCard = (SpellCard)CardManager.AllCards.Find(x => x.Name == "provocation");
         if (spellCard.IsSpell) Cards.Add(((SpellCard)spellCard).GetCopy());
         spellCard = (SpellCard)CardManager.AllCards.Find(x => x.Name == "magic shield");
         if (spellCard.IsSpell) Cards.Add(((SpellCard)spellCard).GetCopy());

@@ -43,7 +43,7 @@ public class AI : MonoBehaviour
         while (GameManagerScr.Instance.EnemyFieldCards.Exists(x => x.Info.CanAttack))
         {
             var activeCard = GameManagerScr.Instance.EnemyFieldCards.FindAll(x => x.Info.CanAttack)[0];
-            bool hasProvocation = GameManagerScr.Instance.PlayerFieldCards.Exists(x => x.Card.IsProvocation);
+            bool hasProvocation = GameManagerScr.Instance.PlayerFieldCards.Exists(x => x.IsProvocation);
 
             if (GameManagerScr.Instance.PlayerFieldCards.Count == 0)
             {
@@ -57,7 +57,7 @@ public class AI : MonoBehaviour
                 CardController enemy;
                 if (hasProvocation)
                 {
-                    enemy = GameManagerScr.Instance.PlayerFieldCards.Find(x => x.Card.IsProvocation);
+                    enemy = GameManagerScr.Instance.PlayerFieldCards.Find(x => x.IsProvocation);
                 }
                 else
                 {
@@ -164,6 +164,14 @@ public class AI : MonoBehaviour
                         else return false;
 
                     case SpellCard.SpellType.DOUBLE_ATTACK_ON_ALLY_CARD:
+                        if (GameManagerScr.Instance.EnemyFieldCards.Count > 0)
+                        {
+                            StartCoroutine(CastCard(card, GameManagerScr.Instance.EnemyFieldCards[Random.Range(0, GameManagerScr.Instance.EnemyFieldCards.Count)]));
+                            return true;
+                        }
+                        else return false;
+
+                    case SpellCard.SpellType.ARMOR_ON_CARD:
                         if (GameManagerScr.Instance.EnemyFieldCards.Count > 0)
                         {
                             StartCoroutine(CastCard(card, GameManagerScr.Instance.EnemyFieldCards[Random.Range(0, GameManagerScr.Instance.EnemyFieldCards.Count)]));

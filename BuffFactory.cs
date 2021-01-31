@@ -6,12 +6,24 @@ public class BuffFactory : MonoBehaviour
 {
     public StatusBars StatusBars;
 
-    public void Init(Buff buff, GameObject buffGameobject)
+    public void Init(Buff buff, GameObject baseGameObject, int? buffValue = null)
     {
-        BuffBehaviour buffBehaviour = buffGameobject.GetComponent<BuffBehaviour>();
-        buffBehaviour.Init(buff);
-        BuffController buffController = new BuffController(buff, buffBehaviour, buffGameobject);
-        StatusBars.Add(buffController);
+        var existingBuff = StatusBars.Buffs.Find(x => x.Buff.Name == buff.Name);
+        if (existingBuff != null)
+        {
+            int? addedValue = buffValue == null ? buff.BuffValue : buffValue;
+            if (addedValue == null) addedValue = 1;     // todo: strange
+
+            existingBuff.Buff.BuffValue += addedValue;
+        }
+        else
+        {
+            GameObject buffGameobject = Instantiate(baseGameObject, StatusBars.BuffBar.transform, false);
+            BuffBehaviour buffBehaviour = buffGameobject.GetComponent<BuffBehaviour>();
+            buffBehaviour.Init(buff);
+            BuffController buffController = new BuffController(buff, buffBehaviour, buffGameobject, buffValue);
+            StatusBars.Add(buffController);
+        }
         return;
     }
 

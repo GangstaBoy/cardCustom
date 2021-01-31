@@ -7,15 +7,15 @@ public class Buff
 {
     public string Name;
     public BuffType BuffType;
-    public int BuffValue;
+    public int? BuffValue;
     public string LogoPath;
 
-    public Buff(string name, string logo, BuffType buffType, int buffValue = 0)
+    public Buff(string name, string logo, BuffType buffType, int? buffValue = null)
     {
         Name = name;
         LogoPath = logo;
         BuffType = buffType;
-        BuffValue = buffValue;
+        if (buffValue != null) BuffValue = buffValue;
     }
 
     public Buff(Buff buff)
@@ -23,7 +23,7 @@ public class Buff
         Name = buff.Name;
         LogoPath = buff.LogoPath;
         BuffType = buff.BuffType;
-        BuffValue = buff.BuffValue;
+        if (buff.BuffValue != null) BuffValue = buff.BuffValue;
     }
 
     public Buff GetCopy()
@@ -39,7 +39,8 @@ public enum BuffType
     MAX_DEFENSE_INCREASE,
     HOLY_SHIELD,
     PROVOCATION,
-    SELF_REGENERATION,
+    DOUBLE_ATTACK,
+    SELF_HP_REGENERATION,
     NEARBY_ALLIES_REGENERATION,
     ALL_ALLIES_REGENERATION
 }
@@ -78,7 +79,12 @@ public class BuffsManagerStarter : MonoBehaviour
     void Awake()
     {
         //BuffsManager.AllBuffs.Add(new Buff("fire arms", "Sprites/Cards/double-attack"));
-        BuffsManager.AllBuffs.Add(new Buff("magic shield", "Sprites/Cards/magic-shield", BuffType.HOLY_SHIELD));
+        BuffsManager.AllBuffs.Add(new Buff("magic shield", "Sprites/Cards/magic-shield", BuffType.HOLY_SHIELD, 1));
+        BuffsManager.AllBuffs.Add(new Buff("provocation", "Sprites/Cards/provocation-spell", BuffType.PROVOCATION));
+        BuffsManager.AllBuffs.Add(new Buff("double attack", "Sprites/Cards/double-attack", BuffType.DOUBLE_ATTACK));
+        BuffsManager.AllBuffs.Add(new Buff("armor", "Sprites/Cards/armor", BuffType.ARMOR));
+        BuffsManager.AllBuffs.Add(new Buff("regeneration", "Sprites/Cards/regeneration", BuffType.SELF_HP_REGENERATION));
+        BuffsManager.AllBuffs.Add(new Buff("healing aura", "Sprites/Cards/heal-allies-buff", BuffType.ALL_ALLIES_REGENERATION));
     }
 }
 

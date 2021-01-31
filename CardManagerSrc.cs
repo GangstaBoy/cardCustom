@@ -29,13 +29,6 @@ public class Card
 
         }
     }
-    public bool IsProvocation
-    {
-        get
-        {
-            return Abilities.Exists(x => x.AbilityType == CardAbility.abilityType.PROVOCATION);
-        }
-    }
     public bool Ranged
     {
         get
@@ -114,7 +107,10 @@ public class SpellCard : Card
         ADD_MANA,
         HEAL_CARD,
         DAMAGE_CARD,
-        DOUBLE_ATTACK_ON_ALLY_CARD
+        DOUBLE_ATTACK_ON_ALLY_CARD,
+        ARMOR_ON_CARD,
+        REGENERATION_ON_CARD,
+        REGENERATION_AURA_ON_CARD
     }
     public enum TargetType
     {
@@ -163,7 +159,7 @@ public class CardManagerSrc : MonoBehaviour
         CardManager.AllCards.Add(new Card("peasant", "Sprites/Cards/peasant", 1, 4, 0, 2, new List<CardAbility> { new CardAbility(CardAbility.abilityType.GOLD_REGENERATION, 1) }));
         CardManager.AllCards.Add(new Card("peasant archer", "Sprites/Cards/archer-peasant", 1, 4, 0, 3, new List<CardAbility> { new CardAbility(CardAbility.abilityType.RANGED), new CardAbility(CardAbility.abilityType.GOLD_REGENERATION, 1) }));
         CardManager.AllCards.Add(new Card("witch", "Sprites/Cards/witch", 2, 5, 0, 3, new List<CardAbility> { new CardAbility(CardAbility.abilityType.MANA_ON_CAST, 2), new CardAbility(CardAbility.abilityType.RANGED) }));
-        CardManager.AllCards.Add(new Card("scarecrow", "Sprites/Cards/scarecrow", 0, 6, 0, 1, new List<CardAbility> { new CardAbility(CardAbility.abilityType.PROVOCATION) }));
+        CardManager.AllCards.Add(new Card("scarecrow", "Sprites/Cards/scarecrow", 0, 60, 0, 1, new List<CardAbility> { new CardAbility(CardAbility.abilityType.PROVOCATION) }));
 
         CardManager.AllCards.Add(new Card("hunter archer", "Sprites/Cards/archer-hunter", 2, 5, 0, 5, new List<CardAbility> { new CardAbility(CardAbility.abilityType.RANGED), new CardAbility(CardAbility.abilityType.INSTANT_ACTIVE) }));
         CardManager.AllCards.Add(new Card("lini hunter", "Sprites/Cards/lini-hunter", 3, 7, 0, 6, new List<CardAbility> { new CardAbility(CardAbility.abilityType.INSTANT_ACTIVE), new CardAbility(CardAbility.abilityType.DAMAGE_HERO_ON_CAST, 2) }));
@@ -192,7 +188,7 @@ public class CardManagerSrc : MonoBehaviour
 
         CardManager.AllCards.Add(new Card("crusader", "Sprites/Cards/crusader", 4, 8, 1, 7, new List<CardAbility> { new CardAbility(CardAbility.abilityType.HOLY_SHIELD) }));
         CardManager.AllCards.Add(new Card("divine mistress", "Sprites/Cards/divine-mistress", 5, 15, 3, 12, new List<CardAbility> { new CardAbility(CardAbility.abilityType.HOLY_SHIELD), new CardAbility(CardAbility.abilityType.REGENERATION_EACH_TURN, 1), new CardAbility(CardAbility.abilityType.DAMAGE_EACH_TURN, 1) }));
-        CardManager.AllCards.Add(new Card("crusader commander", "Sprites/Cards/crusader-commander", 6, 12, 2, 9, new List<CardAbility> { new CardAbility(CardAbility.abilityType.REGENERATION_EACH_TURN, 1) }));
+        CardManager.AllCards.Add(new Card("crusader commander", "Sprites/Cards/crusader-commander", 6, 12, 2, 9, new List<CardAbility> { new CardAbility(CardAbility.abilityType.HOLY_SHIELD), new CardAbility(CardAbility.abilityType.REGENERATION_EACH_TURN, 1) }));
         CardManager.AllCards.Add(new Card("crusader general", "Sprites/Cards/crusader-general", 6, 20, 4, 18, new List<CardAbility> { new CardAbility(CardAbility.abilityType.HOLY_SHIELD), new CardAbility(CardAbility.abilityType.REGENERATION_EACH_TURN, 3), new CardAbility(CardAbility.abilityType.PROVOCATION), new CardAbility(CardAbility.abilityType.DECREASE_ATTACK_ON_ATTACK) }));
         // CardManager.AllCards.Add(new Card("wild werewolf", "Sprites/Cards/wild-werewolf", 4, 7, 0, 5, new List<CardAbility> {new CardAbility(CardAbility.abilityType.INSTANT_ACTIVE, new CardAbility(CardAbility.abilityType.REGENERATION_EACH_TURN, new CardAbility(CardAbility.abilityType.DECREASE_ATTACK_ON_ATTACK}));
 
@@ -212,6 +208,9 @@ public class CardManagerSrc : MonoBehaviour
         CardManager.AllCards.Add(new SpellCard("damage buff", "Sprites/Cards/damage-buff-spell", 2, 0, SpellCard.SpellType.BUFF_CARD_DAMAGE, 2, SpellCard.TargetType.ALLY_CARD_TARGET));
         CardManager.AllCards.Add(new SpellCard("magic shield", "Sprites/Cards/magic-shield", 1, 0, SpellCard.SpellType.SHIELD_ON_ALLY_CARD, 2, SpellCard.TargetType.ALLY_CARD_TARGET));
         CardManager.AllCards.Add(new SpellCard("double attack", "Sprites/Cards/double-attack", 4, 0, SpellCard.SpellType.DOUBLE_ATTACK_ON_ALLY_CARD, 0, SpellCard.TargetType.ALLY_CARD_TARGET));
+        CardManager.AllCards.Add(new SpellCard("armor equipment", "Sprites/Cards/armor-equipment", 0, 2, SpellCard.SpellType.ARMOR_ON_CARD, 4, SpellCard.TargetType.ALLY_CARD_TARGET));
+        CardManager.AllCards.Add(new SpellCard("regeneration", "Sprites/Cards/regeneration", 2, 0, SpellCard.SpellType.REGENERATION_ON_CARD, 2, SpellCard.TargetType.ALLY_CARD_TARGET));
+        CardManager.AllCards.Add(new SpellCard("healing aura", "Sprites/Cards/heal-allies-buff", 5, 0, SpellCard.SpellType.REGENERATION_AURA_ON_CARD, 1, SpellCard.TargetType.ALLY_CARD_TARGET));
 
 
     }

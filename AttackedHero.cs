@@ -33,7 +33,7 @@ public class AttackedHero : MonoBehaviour, IDropHandler
         if (GameManagerScr.Instance.EnemyFieldCards.Count > 0 && !card.Card.Ranged) return;
 
         if (card && card.Info.CanAttack && Type == HeroType.ENEMY
-        && (!GameManagerScr.Instance.EnemyFieldCards.Exists(x => x.Card.IsProvocation)))
+        && (!GameManagerScr.Instance.EnemyFieldCards.Exists(x => x.IsProvocation)))
         {
             GameManagerScr.Instance.DamageHero(card, true);
         }

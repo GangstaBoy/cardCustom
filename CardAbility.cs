@@ -61,12 +61,24 @@ public class CardAbility : MonoBehaviour
                     if (CardController.IsPlayerCard) CardController.Info.HighlightCard(true);
                     break;
 
+                case abilityType.DOUBLE_ATTACK:
+                    GameManagerScr.Instance.CreateBuffPref(CardController, BuffsManager.GetBuff("double attack"));
+                    break;
+
                 case abilityType.HOLY_SHIELD:
-                    CardController.Info.Shield.SetActive(true);
+                    GameManagerScr.Instance.CreateBuffPref(CardController, BuffsManager.GetBuff("magic shield"));
                     break;
 
                 case abilityType.PROVOCATION:
-                    CardController.Info.Provocation.SetActive(true);
+                    GameManagerScr.Instance.CreateBuffPref(CardController, BuffsManager.GetBuff("provocation"));
+                    break;
+
+                case abilityType.REGENERATION_EACH_TURN:
+                    GameManagerScr.Instance.CreateBuffPref(CardController, BuffsManager.GetBuff("regeneration"), 2);
+                    break;
+
+                case abilityType.HEAL_ALLY_FIELD_CARDS_EACH_TURN:
+                    GameManagerScr.Instance.CreateBuffPref(CardController, BuffsManager.GetBuff("healing aura"), 1);
                     break;
 
                 case abilityType.HEAL_ALLY_FIELD_CARDS_ON_CAST:
@@ -133,15 +145,6 @@ public class CardAbility : MonoBehaviour
         {
             switch (ability.AbilityType)
             {
-                case abilityType.DOUBLE_ATTACK:
-                    if (CardController.Card.TimesDealDamage == 1)
-                    {
-                        CardController.Info.CanAttack = true;
-
-                        if (CardController.IsPlayerCard) CardController.Info.HighlightCard(true);
-                    }
-                    break;
-
                 case abilityType.LIFESTEAL:
                     CardController.RegenCardHP(CardController, ability.AbilityValue);
                     break;
@@ -174,27 +177,6 @@ public class CardAbility : MonoBehaviour
         {
             switch (ability.AbilityType)
             {
-                case abilityType.HEAL_ALLY_FIELD_CARDS_EACH_TURN:
-                    if (CardController.IsPlayerCard && GameManagerScr.Instance.PlayerFieldCards.Count > 0)
-                    {
-                        for (int i = GameManagerScr.Instance.PlayerFieldCards.Count - 1; i >= 0; i--)
-                        {
-                            CardController.RegenCardHP(GameManagerScr.Instance.PlayerFieldCards[i], ability.AbilityValue);
-                        }
-                    }
-                    else if (!CardController.IsPlayerCard && GameManagerScr.Instance.EnemyFieldCards.Count > 0)
-                    {
-                        for (int i = GameManagerScr.Instance.EnemyFieldCards.Count - 1; i >= 0; i--)
-                        {
-                            CardController.RegenCardHP(GameManagerScr.Instance.EnemyFieldCards[i], ability.AbilityValue);
-                        }
-                    }
-                    break;
-
-                case abilityType.REGENERATION_EACH_TURN:
-                    CardController.RegenCardHP(CardController, ability.AbilityValue);
-                    break;
-
                 case abilityType.GOLD_REGENERATION:
                     if (CardController.IsPlayerCard)
                     {
