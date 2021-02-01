@@ -68,6 +68,19 @@ public class DeckController : MonoBehaviour, IPointerClickHandler
         }
     }
 
+    public void SpawnCardOfNameToHand(Transform hand, string cardName, int count = 1)
+    {
+        if (count < 1) return;
+        if (!CardManager.AllCards.Exists(x => x.Name == cardName)) return;
+
+        for (int i = 0; i < count; i++)
+        {
+            Card card = CardManager.AllCards.Find(x => x.Name == cardName);
+            GameManagerScr.Instance.CreateCardPref(card.GetCopy(), hand);
+            Debug.Log("Card " + card.Name + " to " + hand);
+        }
+    }
+
     public void GiveCardToHand(Transform hand, int count = 1)
     {
         if (count < 1) return;

@@ -162,6 +162,8 @@ public class CardManagerSrc : MonoBehaviour
         CardManager.AllCards.Add(new Card("witch", "Sprites/Cards/witch", 2, 5, 0, 3, new List<CardAbility> { new CardAbility(CardAbility.abilityType.MANA_ON_CAST, 2), new CardAbility(CardAbility.abilityType.RANGED) }));
         CardManager.AllCards.Add(new Card("scarecrow", "Sprites/Cards/scarecrow", 0, 6, 0, 1, new List<CardAbility> { new CardAbility(CardAbility.abilityType.PROVOCATION) }));
 
+        CardManager.AllCards.Add(new Card("skeleton", "Sprites/Cards/skeleton", 1, 3, 0, 0, new List<CardAbility> { new CardAbility(CardAbility.abilityType.NO_ABILITY) }));
+
         CardManager.AllCards.Add(new Card("hunter archer", "Sprites/Cards/archer-hunter", 2, 5, 0, 4, new List<CardAbility> { new CardAbility(CardAbility.abilityType.RANGED), new CardAbility(CardAbility.abilityType.INSTANT_ACTIVE) }));
         CardManager.AllCards.Add(new Card("lini hunter", "Sprites/Cards/lini-hunter", 3, 7, 0, 5, new List<CardAbility> { new CardAbility(CardAbility.abilityType.INSTANT_ACTIVE), new CardAbility(CardAbility.abilityType.DAMAGE_HERO_ON_CAST, 2) }));
 

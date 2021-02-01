@@ -6,7 +6,7 @@ public class BuffFactory : MonoBehaviour
 {
     public StatusBars StatusBars;
 
-    public void Init(Buff buff, GameObject baseGameObject, int? buffValue = null)
+    public void Init(Buff buff, GameObject baseGameObject, int? buffValue = null, bool isCard = true)
     {
         var existingBuff = StatusBars.Buffs.Find(x => x.Buff.Name == buff.Name);
         if (existingBuff != null)
@@ -21,7 +21,7 @@ public class BuffFactory : MonoBehaviour
             GameObject buffGameobject = Instantiate(baseGameObject, StatusBars.BuffBar.transform, false);
             BuffBehaviour buffBehaviour = buffGameobject.GetComponent<BuffBehaviour>();
             buffBehaviour.Init(buff);
-            BuffController buffController = new BuffController(buff, buffBehaviour, buffGameobject, buffValue);
+            BuffController buffController = new BuffController(buff, buffBehaviour, buffGameobject, buffValue, isCard);
             StatusBars.Add(buffController);
         }
         return;

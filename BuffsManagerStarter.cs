@@ -9,12 +9,15 @@ public class Buff
     public BuffType BuffType;
     public int? BuffValue;
     public string LogoPath;
+    public BuffCategory BuffCategory;
 
-    public Buff(string name, string logo, BuffType buffType, int? buffValue = null)
+
+    public Buff(string name, string logo, BuffType buffType, int? buffValue = null, BuffCategory buffCategory = BuffCategory.BUFF)
     {
         Name = name;
         LogoPath = logo;
         BuffType = buffType;
+        BuffCategory = buffCategory;
         if (buffValue != null) BuffValue = buffValue;
     }
 
@@ -23,6 +26,7 @@ public class Buff
         Name = buff.Name;
         LogoPath = buff.LogoPath;
         BuffType = buff.BuffType;
+        BuffCategory = buff.BuffCategory;
         if (buff.BuffValue != null) BuffValue = buff.BuffValue;
     }
 
@@ -30,6 +34,14 @@ public class Buff
     {
         return new Buff(this);
     }
+}
+
+public enum BuffCategory
+{
+    BUFF,
+    DEBUFF,
+    HERO_BUFF,
+    HERO_DEBUFF
 }
 
 public enum BuffType
@@ -43,7 +55,11 @@ public enum BuffType
     SELF_HP_REGENERATION,
     NEARBY_ALLIES_REGENERATION,
     ALL_ALLIES_REGENERATION,
-    FIRE_SHIELD
+    FIRE_SHIELD,
+    ARMOR_PACKAGE,
+    SKELETON_SUMMONER,
+    MANA_FLARE,
+    GOLD_INCOME
 }
 
 
@@ -87,6 +103,12 @@ public class BuffsManagerStarter : MonoBehaviour
         BuffsManager.AllBuffs.Add(new Buff("regeneration", "Sprites/Cards/regeneration", BuffType.SELF_HP_REGENERATION));
         BuffsManager.AllBuffs.Add(new Buff("healing aura", "Sprites/Cards/heal-allies-buff", BuffType.ALL_ALLIES_REGENERATION));
         BuffsManager.AllBuffs.Add(new Buff("fire shield", "Sprites/Cards/fire-shield", BuffType.FIRE_SHIELD));
+
+        BuffsManager.AllBuffs.Add(new Buff("armor package", "Sprites/Cards/armor", BuffType.ARMOR_PACKAGE, 4, BuffCategory.HERO_BUFF));
+        BuffsManager.AllBuffs.Add(new Buff("skeleton summoner", "Sprites/Cards/skeleton-summoner", BuffType.SKELETON_SUMMONER, 1, BuffCategory.HERO_BUFF));
+        BuffsManager.AllBuffs.Add(new Buff("mana flare", "Sprites/Cards/mana-flare", BuffType.MANA_FLARE, 2, BuffCategory.HERO_BUFF));
+        BuffsManager.AllBuffs.Add(new Buff("gold income", "Sprites/Cards/gold-income", BuffType.GOLD_INCOME, 3, BuffCategory.HERO_BUFF));
+
     }
 }
 

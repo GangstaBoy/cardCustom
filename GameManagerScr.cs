@@ -79,10 +79,9 @@ public class GameManagerScr : MonoBehaviour
         else EnemyHandCards.Add(CardC);
     }
 
-    public void CreateBuffPref(CardController card, Buff buff, int? buffValue = null)   //todo: get rid of this
+    public void CreateBuffPref(BuffFactory buffFactory, Buff buff, int? buffValue = null, bool isCard = true)   //todo: get rid of this
     {
-        BuffFactory buffFactory = card.GetComponent<BuffFactory>();
-        buffFactory.Init(buff, StatePref, buffValue);
+        buffFactory.Init(buff, StatePref, buffValue, isCard);
     }
 
     IEnumerator TurnFunc()
@@ -105,8 +104,8 @@ public class GameManagerScr : MonoBehaviour
                 }
                 card.AbilityController.OnNewTurn();
                 card.StatusBars.OnNewTurn();
-
             }
+            PlayerHero.BuffFactory.StatusBars.OnNewTurn();
 
             while (TurnTime-- > 0)
             {
@@ -118,6 +117,7 @@ public class GameManagerScr : MonoBehaviour
         }
         else
         {
+            EnemyHero.BuffFactory.StatusBars.OnNewTurn();
             foreach (var card in EnemyFieldCards)
             {
                 if (card.Card.Attack > 0) card.Info.CanAttack = true;
@@ -298,6 +298,10 @@ public class GameManagerScr : MonoBehaviour
         PlayerFieldCards.Clear();
         EnemyFieldCards.Clear();
         EnemyHandCards.Clear();
+        EnemyHero.BuffFactory.StatusBars.Buffs.Clear();
+        PlayerHero.BuffFactory.StatusBars.Buffs.Clear();
+        EnemyHero.BuffFactory.StatusBars.Debuffs.Clear();
+        PlayerHero.BuffFactory.StatusBars.Debuffs.Clear();
 
         StartGame();
     }
@@ -307,8 +311,8 @@ public class GameManagerScr : MonoBehaviour
 
         Turn = 0;
         CurrentGame = new Game();
-
-
+        EnemyHero.InitializeHero(AttackedHero.Hero.NECROMANCER, true);
+        PlayerHero.InitializeHero(AttackedHero.Hero.NECROMANCER, true);
         EnemyDeck.GiveCardToHand(EnemyHand, 4); //todo: fix
         PlayerDeck.GiveCardToHand(PlayerHand, 4); //todo: fix
         UIController.Instance.StartGame();

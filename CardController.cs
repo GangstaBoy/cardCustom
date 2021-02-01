@@ -170,32 +170,32 @@ public class CardController : MonoBehaviour
 
             case SpellCard.SpellType.PROVOCATION_ON_ALLY_CARD:
                 if (!target.StatusBars.Buffs.Exists(x => x.Buff.BuffType == BuffType.PROVOCATION))
-                    GameManager.CreateBuffPref(target, BuffsManager.GetBuff("provocation"));
+                    GameManager.CreateBuffPref(target.BuffFactory, BuffsManager.GetBuff("provocation"));
                 break;
 
             case SpellCard.SpellType.REGENERATION_ON_CARD:
-                GameManager.CreateBuffPref(target, BuffsManager.GetBuff("regeneration"), spellCard.SpellValue);
+                GameManager.CreateBuffPref(target.BuffFactory, BuffsManager.GetBuff("regeneration"), spellCard.SpellValue);
                 break;
 
             case SpellCard.SpellType.REGENERATION_AURA_ON_CARD:
-                GameManager.CreateBuffPref(target, BuffsManager.GetBuff("healing aura"), spellCard.SpellValue);
+                GameManager.CreateBuffPref(target.BuffFactory, BuffsManager.GetBuff("healing aura"), spellCard.SpellValue);
                 break;
 
             case SpellCard.SpellType.FIRE_SHIELD_ON_CARD:
-                GameManager.CreateBuffPref(target, BuffsManager.GetBuff("fire shield"), spellCard.SpellValue);
+                GameManager.CreateBuffPref(target.BuffFactory, BuffsManager.GetBuff("fire shield"), spellCard.SpellValue);
                 break;
 
             case SpellCard.SpellType.ARMOR_ON_CARD:
-                GameManager.CreateBuffPref(target, BuffsManager.GetBuff("armor"), spellCard.SpellValue);
+                GameManager.CreateBuffPref(target.BuffFactory, BuffsManager.GetBuff("armor"), spellCard.SpellValue);
                 break;
 
             case SpellCard.SpellType.DOUBLE_ATTACK_ON_ALLY_CARD:
                 if (!target.StatusBars.Buffs.Exists(x => x.Buff.BuffType == BuffType.DOUBLE_ATTACK))
-                    GameManager.CreateBuffPref(target, BuffsManager.GetBuff("double attack"));
+                    GameManager.CreateBuffPref(target.BuffFactory, BuffsManager.GetBuff("double attack"));
                 break;
 
             case SpellCard.SpellType.SHIELD_ON_ALLY_CARD:
-                GameManager.CreateBuffPref(target, BuffsManager.GetBuff("magic shield"));
+                GameManager.CreateBuffPref(target.BuffFactory, BuffsManager.GetBuff("magic shield"));
                 break;
 
             case SpellCard.SpellType.DAMAGE_CARD:

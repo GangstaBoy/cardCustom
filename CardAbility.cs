@@ -63,31 +63,31 @@ public class CardAbility : MonoBehaviour
                     break;
 
                 case abilityType.DAMAGE_EACH_TURN:
-                    GameManagerScr.Instance.CreateBuffPref(CardController, BuffsManager.GetBuff("fire shield"), ability.AbilityValue);
+                    GameManagerScr.Instance.CreateBuffPref(CardController.BuffFactory, BuffsManager.GetBuff("fire shield"), ability.AbilityValue);
                     break;
 
                 case abilityType.DOUBLE_ATTACK:
-                    GameManagerScr.Instance.CreateBuffPref(CardController, BuffsManager.GetBuff("double attack"));
+                    GameManagerScr.Instance.CreateBuffPref(CardController.BuffFactory, BuffsManager.GetBuff("double attack"));
                     break;
 
                 case abilityType.HOLY_SHIELD:
-                    GameManagerScr.Instance.CreateBuffPref(CardController, BuffsManager.GetBuff("magic shield"));
+                    GameManagerScr.Instance.CreateBuffPref(CardController.BuffFactory, BuffsManager.GetBuff("magic shield"));
                     break;
 
                 case abilityType.ARMOR_ON_CAST:
-                    GameManagerScr.Instance.CreateBuffPref(CardController, BuffsManager.GetBuff("armor"), ability.AbilityValue);
+                    GameManagerScr.Instance.CreateBuffPref(CardController.BuffFactory, BuffsManager.GetBuff("armor"), ability.AbilityValue);
                     break;
 
                 case abilityType.PROVOCATION:
-                    GameManagerScr.Instance.CreateBuffPref(CardController, BuffsManager.GetBuff("provocation"));
+                    GameManagerScr.Instance.CreateBuffPref(CardController.BuffFactory, BuffsManager.GetBuff("provocation"));
                     break;
 
                 case abilityType.REGENERATION_EACH_TURN:
-                    GameManagerScr.Instance.CreateBuffPref(CardController, BuffsManager.GetBuff("regeneration"), ability.AbilityValue);
+                    GameManagerScr.Instance.CreateBuffPref(CardController.BuffFactory, BuffsManager.GetBuff("regeneration"), ability.AbilityValue);
                     break;
 
                 case abilityType.HEAL_ALLY_FIELD_CARDS_EACH_TURN:
-                    GameManagerScr.Instance.CreateBuffPref(CardController, BuffsManager.GetBuff("healing aura"), ability.AbilityValue);
+                    GameManagerScr.Instance.CreateBuffPref(CardController.BuffFactory, BuffsManager.GetBuff("healing aura"), ability.AbilityValue);
                     break;
 
                 case abilityType.HEAL_ALLY_FIELD_CARDS_ON_CAST:
@@ -112,7 +112,6 @@ public class CardAbility : MonoBehaviour
                     {
                         for (int i = GameManagerScr.Instance.EnemyFieldCards.Count - 1; i >= 0; i--)
                         {
-                            Debug.Log("Damage to " + GameManagerScr.Instance.EnemyFieldCards[i].name);
                             CardController.GiveDamageTo(GameManagerScr.Instance.EnemyFieldCards[i], ability.AbilityValue);
 
                         }
@@ -121,7 +120,6 @@ public class CardAbility : MonoBehaviour
                     {
                         for (int i = GameManagerScr.Instance.PlayerFieldCards.Count - 1; i >= 0; i--)
                         {
-                            Debug.Log("Damage to " + GameManagerScr.Instance.PlayerFieldCards[i].name);
                             CardController.GiveDamageTo(GameManagerScr.Instance.PlayerFieldCards[i], ability.AbilityValue);
 
                         }

@@ -12,15 +12,50 @@ public class AttackedHero : MonoBehaviour, IDropHandler
         ENEMY,
         PLAYER
     }
+    public enum Hero
+    {
+        NECROMANCER,
+        MAGE_QUEEN,
+        DRUID_KING,
+        CASTLE_KING
+    }
     public Image HeroIcon;
     public HeroType Type;
     public GameManagerScr GameManager;
     public List<Sprite> Icons;
     public Color TargetCol, NormalCol;
+    public BuffFactory BuffFactory;
 
-    void Start()
+    void Awake()
     {
-        HeroIcon.sprite = Icons[Random.Range(0, Icons.Count)];
+        //Hero hero = (Hero)Random.Range(0, 3);
+        BuffFactory.StatusBars.InitializeStatusBars();
+    }
+
+    public void InitializeHero(Hero hero, bool randomize = false)
+    {
+        if (randomize) hero = (Hero)Random.Range(0, 3);
+        switch (hero)
+        {
+            case Hero.CASTLE_KING:
+                HeroIcon.sprite = Icons.Find(x => x.name == "HERO_CASTLE_KING");
+                GameManagerScr.Instance.CreateBuffPref(BuffFactory, BuffsManager.GetBuff("armor package"), 3, false);
+                break;
+            case Hero.NECROMANCER:
+                HeroIcon.sprite = Icons.Find(x => x.name == "HERO_NECROMANCER");
+                GameManagerScr.Instance.CreateBuffPref(BuffFactory, BuffsManager.GetBuff("skeleton summoner"), 1, false);
+                break;
+            case Hero.DRUID_KING:
+                HeroIcon.sprite = Icons.Find(x => x.name == "HERO_DRUID_KING");
+                GameManagerScr.Instance.CreateBuffPref(BuffFactory, BuffsManager.GetBuff("gold income"), 3, false);
+                break;
+            case Hero.MAGE_QUEEN:
+                HeroIcon.sprite = Icons.Find(x => x.name == "HERO_MAGE_QUEEN");
+                GameManagerScr.Instance.CreateBuffPref(BuffFactory, BuffsManager.GetBuff("mana flare"), 2, false);
+                break;
+            default:
+                break;
+        }
         HeroIcon.preserveAspect = true;
     }
 
