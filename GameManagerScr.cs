@@ -97,7 +97,7 @@ public class GameManagerScr : MonoBehaviour
         {
             foreach (var card in PlayerFieldCards)
             {
-                if (card.Card.Attack > 0)
+                if (card.currentAttack > 0)
                 {
                     card.Info.CanAttack = true;
                     card.Info.HighlightCard(true);
@@ -120,7 +120,7 @@ public class GameManagerScr : MonoBehaviour
             EnemyHero.BuffFactory.StatusBars.OnNewTurn();
             foreach (var card in EnemyFieldCards)
             {
-                if (card.Card.Attack > 0) card.Info.CanAttack = true;
+                if (card.currentAttack > 0) card.Info.CanAttack = true;
                 card.StatusBars.OnNewTurn();
                 card.AbilityController.OnNewTurn();
             }
@@ -162,20 +162,19 @@ public class GameManagerScr : MonoBehaviour
 
     void GiveNewCards(bool isPlayerTurn)
     {
-        if (isPlayerTurn) PlayerDeck.GiveCardToHand(PlayerHand);
-        else EnemyDeck.GiveCardToHand(EnemyHand);
-
+        if (isPlayerTurn) PlayerDeck.DrawCardsFromDeck(PlayerHand);
+        else EnemyDeck.DrawCardsFromDeck(EnemyHand);
     }
     public void CardsFight(CardController attacker, CardController defender)
     {
         attacker.Info.CanAttack = false;
-        attacker.GiveDamageTo(defender, attacker.Card.Attack);
+        attacker.GiveDamageTo(defender, attacker.currentAttack);
         attacker.OnDamageDeal();
         defender.OnTakeDamage(attacker);
 
         if (!attacker.Card.Ranged)
         {
-            defender.GiveDamageTo(attacker, defender.Card.Attack);
+            defender.GiveDamageTo(attacker, defender.currentAttack);
             attacker.OnTakeDamage();
         }
 
@@ -212,13 +211,13 @@ public class GameManagerScr : MonoBehaviour
     {
         if (isEnemyAttacked)
         {
-            CurrentGame.Enemy.GetDamage(card.Card.Attack);
-            EnemyHero.ShowHeroHPChangedEvent(EnemyHero, card.Card.Attack, true);
+            CurrentGame.Enemy.GetDamage(card.currentAttack);
+            EnemyHero.ShowHeroHPChangedEvent(EnemyHero, card.currentAttack, true);
         }
         else
         {
-            CurrentGame.Player.GetDamage(card.Card.Attack);
-            PlayerHero.ShowHeroHPChangedEvent(PlayerHero, card.Card.Attack, true);
+            CurrentGame.Player.GetDamage(card.currentAttack);
+            PlayerHero.ShowHeroHPChangedEvent(PlayerHero, card.currentAttack, true);
         }
         card.OnDamageDeal();
         CheckResult();
@@ -298,6 +297,15 @@ public class GameManagerScr : MonoBehaviour
         PlayerFieldCards.Clear();
         EnemyFieldCards.Clear();
         EnemyHandCards.Clear();
+
+        foreach (var buff in EnemyHero.BuffFactory.StatusBars.Buffs)
+            Destroy(buff.BuffGameobject.gameObject);
+        foreach (var buff in PlayerHero.BuffFactory.StatusBars.Buffs)
+            Destroy(buff.BuffGameobject.gameObject);
+        foreach (var buff in EnemyHero.BuffFactory.StatusBars.Debuffs)
+            Destroy(buff.BuffGameobject.gameObject);
+        foreach (var buff in PlayerHero.BuffFactory.StatusBars.Debuffs)
+            Destroy(buff.BuffGameobject.gameObject);
         EnemyHero.BuffFactory.StatusBars.Buffs.Clear();
         PlayerHero.BuffFactory.StatusBars.Buffs.Clear();
         EnemyHero.BuffFactory.StatusBars.Debuffs.Clear();
@@ -313,8 +321,8 @@ public class GameManagerScr : MonoBehaviour
         CurrentGame = new Game();
         EnemyHero.InitializeHero(AttackedHero.Hero.NECROMANCER, true);
         PlayerHero.InitializeHero(AttackedHero.Hero.NECROMANCER, true);
-        EnemyDeck.GiveCardToHand(EnemyHand, 4); //todo: fix
-        PlayerDeck.GiveCardToHand(PlayerHand, 4); //todo: fix
+        EnemyDeck.DrawCardsFromDeck(EnemyHand, 4); //todo: fix
+        PlayerDeck.DrawCardsFromDeck(PlayerHand, 4); //todo: fix
         UIController.Instance.StartGame();
 
         StartCoroutine(TurnFunc());

@@ -223,6 +223,14 @@ public class AI : MonoBehaviour
                             return true;
                         }
                         else return false;
+
+                    case SpellCard.SpellType.CHAIN_LIGHTNING:
+                        if (GameManagerScr.Instance.PlayerFieldCards.Count > 0)
+                        {
+                            StartCoroutine(CastCard(card, GameManagerScr.Instance.PlayerFieldCards[Random.Range(0, GameManagerScr.Instance.PlayerFieldCards.Count)]));
+                            return true;
+                        }
+                        else return false;
                 }
                 return false;
 

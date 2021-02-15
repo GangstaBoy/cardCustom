@@ -10,10 +10,12 @@ public class Buff
     public int? BuffValue;
     public string LogoPath;
     public BuffCategory BuffCategory;
+    public bool AttackModifier;
 
 
-    public Buff(string name, string logo, BuffType buffType, int? buffValue = null, BuffCategory buffCategory = BuffCategory.BUFF)
+    public Buff(string name, string logo, BuffType buffType, int? buffValue = null, BuffCategory buffCategory = BuffCategory.BUFF, bool attackModifier = false)
     {
+        AttackModifier = attackModifier;
         Name = name;
         LogoPath = logo;
         BuffType = buffType;
@@ -23,6 +25,7 @@ public class Buff
 
     public Buff(Buff buff)
     {
+        AttackModifier = buff.AttackModifier;
         Name = buff.Name;
         LogoPath = buff.LogoPath;
         BuffType = buff.BuffType;
@@ -59,7 +62,10 @@ public enum BuffType
     ARMOR_PACKAGE,
     SKELETON_SUMMONER,
     MANA_FLARE,
-    GOLD_INCOME
+    GOLD_INCOME,
+    BUFF_DAMAGE,
+    WOLF_AURA,
+    WOLF_AURA_CAST
 }
 
 
@@ -103,6 +109,9 @@ public class BuffsManagerStarter : MonoBehaviour
         BuffsManager.AllBuffs.Add(new Buff("regeneration", "Sprites/Cards/regeneration", BuffType.SELF_HP_REGENERATION));
         BuffsManager.AllBuffs.Add(new Buff("healing aura", "Sprites/Cards/heal-allies-buff", BuffType.ALL_ALLIES_REGENERATION));
         BuffsManager.AllBuffs.Add(new Buff("fire shield", "Sprites/Cards/fire-shield", BuffType.FIRE_SHIELD));
+        BuffsManager.AllBuffs.Add(new Buff("buff damage", "Sprites/Cards/damage-buff-spell", BuffType.BUFF_DAMAGE, 1, BuffCategory.BUFF, true));
+        BuffsManager.AllBuffs.Add(new Buff("wolf aura", "Sprites/Cards/wolf", BuffType.WOLF_AURA, 1, BuffCategory.BUFF));
+
 
         BuffsManager.AllBuffs.Add(new Buff("armor package", "Sprites/Cards/armor", BuffType.ARMOR_PACKAGE, 4, BuffCategory.HERO_BUFF));
         BuffsManager.AllBuffs.Add(new Buff("skeleton summoner", "Sprites/Cards/skeleton-summoner", BuffType.SKELETON_SUMMONER, 1, BuffCategory.HERO_BUFF));

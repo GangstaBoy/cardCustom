@@ -19,9 +19,33 @@ public class CardController : MonoBehaviour
             return StatusBars.Buffs.Exists(x => x.Buff.BuffType == BuffType.PROVOCATION);
         }
     }
+    public int currentAttack
+    {
+        get
+        {
+            if (!Card.IsPlaced) return Card.Attack;
+            if (StatusBars.Buffs.Count + StatusBars.Debuffs.Count == 0)
+            {
+                return Card.Attack;
+            }
+            else
+            {
+                int diff = 0;
+                foreach (var buff in StatusBars.Buffs)
+                {
+                    if (buff.Buff.AttackModifier) diff += buff.Buff.BuffValue.Value;
+                }
+
+                foreach (var debuff in StatusBars.Debuffs)
+                {
+                    if (debuff.Buff.AttackModifier) diff -= debuff.Buff.BuffValue.Value;
+                }
+                return Card.Attack + diff >= 0 ? Card.Attack + diff : 0;
+            }
+        }
+    }
 
     GameManagerScr GameManager;
-
     public void Init(Card card, bool isPlayerCard)
     {
 
@@ -38,7 +62,6 @@ public class CardController : MonoBehaviour
         }
         else Info.HideCardInfo();
     }
-
     public void OnCast()
     {
         //if (Card.IsSpell && ((SpellCard)Card).SpellTarget != SpellCard.TargetType.NO_TARGET) return;
@@ -62,13 +85,11 @@ public class CardController : MonoBehaviour
         if (Card.HasAbility) AbilityController.OnCast();
         if (Card.IsSpell) UseSpell(null);
     }
-
     public void OnTakeDamage(CardController attacker = null)
     {
         CheckIfAlive();
         AbilityController.OnTakeDamage(attacker);
     }
-
     public void OnDamageDeal()
     {
         Card.TimesDealDamage++;
@@ -78,13 +99,29 @@ public class CardController : MonoBehaviour
         if (Card.HasAbility) AbilityController.OnDamageDeal();
         StatusBars.TriggerDamageDeal();
     }
-
     public void UseSpell(CardController target)
     {
         var spellCard = (SpellCard)Card;
 
         switch (spellCard.Spell)
         {
+            case SpellCard.SpellType.CHAIN_LIGHTNING:
+                var enemyCards = IsPlayerCard ?
+                    new List<CardController>(GameManager.EnemyFieldCards) :
+                    new List<CardController>(GameManager.PlayerFieldCards);
+                int startDamage = spellCard.SpellValue;
+                GiveDamageTo(target, startDamage);
+                enemyCards.Remove(target);
+                int max = enemyCards.Count;
+                for (int i = 0; i < max; i++)
+                {
+                    var card = enemyCards[Random.Range(0, enemyCards.Count)];
+                    GiveDamageTo(card, startDamage + i + 1);
+                    enemyCards.Remove(card);
+                }
+                break;
+
+
             case SpellCard.SpellType.ADD_GOLD:
                 if (IsPlayerCard)
                 {
@@ -112,15 +149,13 @@ public class CardController : MonoBehaviour
                 break;
 
             case SpellCard.SpellType.BUFF_CARD_DAMAGE:
-                target.Card.Attack += spellCard.SpellValue;
+                GameManager.CreateBuffPref(target.BuffFactory, BuffsManager.GetBuff("buff damage"), spellCard.SpellValue);
                 break;
 
             case SpellCard.SpellType.DAMAGE_ENEMY_FIELD_CARDS:
-                var enemyCards = IsPlayerCard ?
+                foreach (var card in IsPlayerCard ?
                     new List<CardController>(GameManager.EnemyFieldCards) :
-                    new List<CardController>(GameManager.PlayerFieldCards);
-
-                foreach (var card in enemyCards)
+                    new List<CardController>(GameManager.PlayerFieldCards))
                 {
                     GiveDamageTo(card, spellCard.SpellValue);
                 }
@@ -203,7 +238,8 @@ public class CardController : MonoBehaviour
                 break;
 
             case SpellCard.SpellType.HEAL_CARD:
-                target.RegenCardHP(target, spellCard.SpellValue);
+                if (target)
+                    target.RegenCardHP(target, spellCard.SpellValue);
                 break;
 
             default:
@@ -216,8 +252,6 @@ public class CardController : MonoBehaviour
         }
         DestroyCard();
     }
-
-
     public void GiveDamageTo(CardController card, int damage)
     {
         if (!card.StatusBars.Buffs.Exists(x => x.Buff.BuffType == BuffType.HOLY_SHIELD)) // fix here not to check twice

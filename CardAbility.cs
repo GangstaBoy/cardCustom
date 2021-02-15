@@ -24,7 +24,9 @@ public class CardAbility : MonoBehaviour
         HEAL_ALLY_FIELD_CARDS_ON_CAST,
         HEAL_ALLY_FIELD_CARDS_EACH_TURN,
         LIFESTEAL,
-        ARMOR_ON_CAST
+        ARMOR_ON_CAST,
+        DRAW_CARD_ON_CAST,
+        WOLF_AURA
 
     }
 
@@ -44,6 +46,17 @@ public class CardAbility : MonoBehaviour
         {
             switch (ability.AbilityType)
             {
+                case abilityType.WOLF_AURA:
+                    GameManagerScr.Instance.CreateBuffPref(CardController.BuffFactory, BuffsManager.GetBuff("wolf aura"), ability.AbilityValue);
+                    break;
+
+                case abilityType.DRAW_CARD_ON_CAST:
+                    if (CardController.IsPlayerCard)
+                        GameManagerScr.Instance.PlayerDeck.DrawCardsFromDeck(GameManagerScr.Instance.PlayerHand, ability.AbilityValue);
+                    else
+                        GameManagerScr.Instance.EnemyDeck.DrawCardsFromDeck(GameManagerScr.Instance.EnemyHand, ability.AbilityValue);
+                    break;
+
                 case abilityType.MANA_ON_CAST:
                     if (CardController.IsPlayerCard)
                     {

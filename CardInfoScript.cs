@@ -38,7 +38,7 @@ public class CardInfoScript : MonoBehaviour
 
     public void Refresh()
     {
-        Attack.text = CC.Card.Attack.ToString();
+        Attack.text = CC.currentAttack.ToString();
         Defense.text = CC.Card.Defense.ToString();
         Manacost.text = CC.Card.Manacost.ToString();
         Goldcost.text = CC.Card.Goldcost.ToString();

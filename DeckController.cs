@@ -10,15 +10,15 @@ public class DeckController : MonoBehaviour, IPointerClickHandler
 
     public void customDeck()
     {
-        Card card = CardManager.AllCards.Find(x => x.Name == "scarecrow");
+        Card card = CardManager.AllCards.Find(x => x.Name == "alfa wolf");
         if (card.IsSpell) Cards.Add(((SpellCard)card).GetCopy());
         else Cards.Add(card.GetCopy());
-        card = CardManager.AllCards.Find(x => x.Name == "divine mistress");
+        card = CardManager.AllCards.Find(x => x.Name == "wolf");
         if (card.IsSpell) Cards.Add(((SpellCard)card).GetCopy());
         else Cards.Add(card.GetCopy());
-        SpellCard spellCard = (SpellCard)CardManager.AllCards.Find(x => x.Name == "fire shield");
+        SpellCard spellCard = (SpellCard)CardManager.AllCards.Find(x => x.Name == "damage buff");
         if (spellCard.IsSpell) Cards.Add(((SpellCard)spellCard).GetCopy());
-        spellCard = (SpellCard)CardManager.AllCards.Find(x => x.Name == "regeneration");
+        spellCard = (SpellCard)CardManager.AllCards.Find(x => x.Name == "damage buff");
         if (spellCard.IsSpell) Cards.Add(((SpellCard)spellCard).GetCopy());
         spellCard = (SpellCard)CardManager.AllCards.Find(x => x.Name == "magic shield");
         if (spellCard.IsSpell) Cards.Add(((SpellCard)spellCard).GetCopy());
@@ -68,7 +68,7 @@ public class DeckController : MonoBehaviour, IPointerClickHandler
         }
     }
 
-    public void SpawnCardOfNameToHand(Transform hand, string cardName, int count = 1)
+    public void GiveCardToHand(Transform hand, string cardName, int count = 1)
     {
         if (count < 1) return;
         if (!CardManager.AllCards.Exists(x => x.Name == cardName)) return;
@@ -81,7 +81,7 @@ public class DeckController : MonoBehaviour, IPointerClickHandler
         }
     }
 
-    public void GiveCardToHand(Transform hand, int count = 1)
+    public void DrawCardsFromDeck(Transform hand, int count = 1)
     {
         if (count < 1) return;
         for (int i = 0; i < count; i++)

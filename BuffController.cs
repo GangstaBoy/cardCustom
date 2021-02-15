@@ -42,6 +42,27 @@ public class BuffController
 
             default:
                 break;
+
+            case BuffType.WOLF_AURA:
+                if (CardController.IsPlayerCard && GameManagerScr.Instance.PlayerFieldCards.Count > 0)
+                {
+                    foreach (var card in GameManagerScr.Instance.PlayerFieldCards)
+                    {
+                        if (!(card == CardController))
+                            GameManagerScr.Instance.CreateBuffPref(card.BuffFactory, BuffsManager.GetBuff("buff damage"), Buff.BuffValue.Value);
+                        card.Info.Refresh();
+                    }
+                }
+                else if (!CardController.IsPlayerCard && GameManagerScr.Instance.EnemyFieldCards.Count > 0)
+                {
+                    foreach (var card in GameManagerScr.Instance.EnemyFieldCards)
+                    {
+                        if (!card == CardController)
+                            GameManagerScr.Instance.CreateBuffPref(card.BuffFactory, BuffsManager.GetBuff("buff damage"), Buff.BuffValue.Value);
+                        card.Info.Refresh();
+                    }
+                }
+                break;
         }
     }
 
@@ -142,11 +163,11 @@ public class BuffController
             case BuffType.SKELETON_SUMMONER:
                 if (Hero.Type == AttackedHero.HeroType.PLAYER)
                 {
-                    GameManagerScr.Instance.PlayerDeck.SpawnCardOfNameToHand(GameManagerScr.Instance.PlayerHand, "skeleton", 1);
+                    GameManagerScr.Instance.PlayerDeck.GiveCardToHand(GameManagerScr.Instance.PlayerHand, "skeleton", 1);
                 }
                 else if (Hero.Type == AttackedHero.HeroType.ENEMY)
                 {
-                    GameManagerScr.Instance.EnemyDeck.SpawnCardOfNameToHand(GameManagerScr.Instance.EnemyHand, "skeleton", 1);
+                    GameManagerScr.Instance.EnemyDeck.GiveCardToHand(GameManagerScr.Instance.EnemyHand, "skeleton", 1);
                 }
                 break;
 
