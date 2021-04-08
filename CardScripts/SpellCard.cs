@@ -8,7 +8,7 @@ public class SpellCardNew : ICard
     {
         get
         {
-            return false;
+            return true;
         }
 
     }

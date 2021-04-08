@@ -1,4 +1,4 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -16,7 +16,14 @@ public class CardNew : MonoBehaviour, IPointerClickHandler
     private Opponent _player;
     [SerializeField] private CardDisplay _cardDisplay;
     private ICard _card;
+    public DropPlaceScriptNew Drop;
 
+    void Start()
+    {
+        Camera MainCamera = Camera.allCameras[0];       //todo: fix this shit! Perhaps make a single Event System? 
+        Drop = MainCamera.GetComponent<Opponent>().FieldTransform.GetComponent<DropPlaceScriptNew>();
+        Drop.CardDropped += OnDrop;
+    }
 
     public void Initialize(CardSO card, Opponent player)
     {
@@ -27,18 +34,32 @@ public class CardNew : MonoBehaviour, IPointerClickHandler
         if (_cardSO.Type == CardSO.CardType.SPELL) _card = new SpellCardNew();
     }
 
+    private void OnDrop(object sender, DropPlaceScriptNew.CardDroppedEventArgs e)
+    {
+        if (e.droppedObject == this.gameObject)
+        {
+            Play();
+        }
+    }
     public void ShowCard()
     {
         _cardDisplay.ShowCard();
     }
 
-    public void OnPointerClick(PointerEventData eventData)
+    public void Play()
     {
         if (_card.isPlayable)
         {
             _card.Play();
-            Destroy(gameObject, 0.1f);
+            Drop.CardDropped -= OnDrop;
+            Destroy(gameObject, 0.01f);
         }
+
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        Play();
     }
 }
 

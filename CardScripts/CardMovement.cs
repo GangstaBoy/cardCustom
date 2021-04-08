@@ -17,7 +17,6 @@ public class CardMovement : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
     void Awake()
     {
-        Debug.Log(Camera.allCameras[0]);
         MainCamera = Camera.allCameras[0]; // todo: fix
         TempCardGO = GameObject.Find("TempCardGO");
         DefaultParent = DefaultTempCardParent = transform.parent;
@@ -68,15 +67,12 @@ public class CardMovement : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
             return;
         Vector3 newPos = MainCamera.ScreenToWorldPoint(eventData.position);
         transform.position = newPos + offset;
-        /*
-                if (!CC.Card.IsSpell)
-                {
-                    if (TempCardGO.transform.parent != DefaultTempCardParent)
-                        TempCardGO.transform.SetParent(DefaultTempCardParent);
+        if (TempCardGO.transform.parent != DefaultTempCardParent)
+            TempCardGO.transform.SetParent(DefaultTempCardParent);
 
-                    if (DefaultParent.GetComponent<DropPlaceScript>().type != FieldType.SELF_FIELD)
-                        CheckPoisition();
-                } */
+        if (DefaultParent.GetComponent<DropPlaceScriptNew>().type != FieldType.SELF_FIELD)
+            CheckPoisition();
+
     }
 
     public void OnEndDrag(PointerEventData eventData)

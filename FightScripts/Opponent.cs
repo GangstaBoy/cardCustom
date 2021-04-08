@@ -26,9 +26,10 @@ public class Opponent : MonoBehaviour
 #nullable disable
     public void Start()
     {
-        TakeCard(_deck);
-        TakeCard(_deck);
-        TakeCard(_deck);
+        for (int i = 0; i < 10; i++)
+        {
+            TakeCard(_deck);
+        }
         foreach (var item in _hand)
         {
             item.ShowCard();

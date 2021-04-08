@@ -8,9 +8,16 @@ public class DeckBehavior : MonoBehaviour
 
     private void RandomizeDeck()
     {
+        for (int i = 0; i < 10; i++)
+        {
+            _deck.Add(Resources.Load<CardSO>("CardObjects/Peasant"));
+        }
+        /*
         _deck.Add(Resources.Load<CardSO>("CardObjects/Peasant"));
         _deck.Add(Resources.Load<CardSO>("CardObjects/Wolf"));
         _deck.Add(Resources.Load<CardSO>("CardObjects/Magic Sparks"));
+        _deck.Add(Resources.Load<CardSO>("CardObjects/Magic Sparks"));
+        */
     }
 
     private void Awake()
