@@ -38,8 +38,6 @@ public class CardMovement : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     }
     public void OnBeginDrag(PointerEventData eventData)
     {
-
-
         CheckIfDraggable();
 
         if (!IsDraggable)
@@ -66,9 +64,14 @@ public class CardMovement : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         if (!IsDraggable)
             return;
         Vector3 newPos = MainCamera.ScreenToWorldPoint(eventData.position);
+        transform.localRotation = Quaternion.Euler(0, 0, 0);
         transform.position = newPos + offset;
         if (TempCardGO.transform.parent != DefaultTempCardParent)
+        {
             TempCardGO.transform.SetParent(DefaultTempCardParent);
+            if (DefaultTempCardParent.GetComponent<DropPlaceScriptNew>().type == FieldType.SELF_FIELD)
+                TempCardGO.transform.localRotation = Quaternion.Euler(0, 0, 0);
+        }
 
         if (DefaultParent.GetComponent<DropPlaceScriptNew>().type != FieldType.SELF_FIELD)
             CheckPoisition();

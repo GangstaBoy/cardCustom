@@ -22,6 +22,7 @@ public class DropPlaceScriptNew : MonoBehaviour, IDropHandler, IPointerEnterHand
     }
     public event EventHandler<CardDroppedEventArgs> CardDropped;
     public FieldType type;
+    private int _rotation;
     public void OnDrop(PointerEventData eventData)
     {
         if (type != FieldType.SELF_FIELD)
@@ -29,9 +30,7 @@ public class DropPlaceScriptNew : MonoBehaviour, IDropHandler, IPointerEnterHand
 
         CardMovement card = eventData.pointerDrag.GetComponent<CardMovement>();
         card.DefaultParent = transform;
-        Debug.Log("Length before: " + CardDropped?.GetInvocationList().Length);
         CardDropped?.Invoke(this.gameObject, new CardDroppedEventArgs { droppedObject = card.gameObject });
-        Debug.Log("Length after: " + CardDropped?.GetInvocationList().Length);
     }
 
     public void OnPointerEnter(PointerEventData eventData)

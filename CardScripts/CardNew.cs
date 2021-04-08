@@ -52,7 +52,7 @@ public class CardNew : MonoBehaviour, IPointerClickHandler
         {
             _card.Play();
             Drop.CardDropped -= OnDrop;
-            Destroy(gameObject, 0.01f);
+            //Destroy(gameObject, 0.01f);
         }
 
     }

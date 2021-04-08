@@ -13,17 +13,17 @@ public class CreatureCard : ICard
         }
 
     }
-    private CardNew _parent;
+    private CardNew _sourceCard;
 
-    public CreatureCard(CardNew parent)
+    public CreatureCard(CardNew sourceCard)
     {
-        _parent = parent;
+        _sourceCard = sourceCard;
     }
 
     public void Play()
     {
         if (!isPlayable) return;
-        var card = Object.Instantiate(Resources.Load("Prefabs/CreaturePref"), _parent.Owner.FieldTransform);
+        //var creature = Object.Instantiate(Resources.Load("Prefabs/CreaturePref"), _sourceCard.Owner.FieldTransform);
         Debug.Log(this + " was played like a creature.");
     }
 }
