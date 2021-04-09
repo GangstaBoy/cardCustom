@@ -7,24 +7,45 @@ using UnityEngine.UI;
 
 public class CardMovement : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
+    public DropPlaceScriptNew Drop;
     Camera MainCamera;
     Vector3 offset; // stores distance between card center and click place
     public Transform DefaultParent, DefaultTempCardParent;
     GameObject TempCardGO;
-    public bool IsDraggable;
-    int startID;
+    public bool IsDraggable { get => _isDraggable; }
+    public int initialHandIndex { get => _initialHandIndex; }
+    private int _initialHandIndex;
+    private bool _isDraggable;
+    [SerializeField] private CardNew _cardNew;
 
 
     void Awake()
     {
         MainCamera = Camera.allCameras[0]; // todo: fix
         TempCardGO = GameObject.Find("TempCardGO");
-        DefaultParent = DefaultTempCardParent = transform.parent;
     }
 
     void Start()
     {
         CheckIfDraggable();
+        Drop = MainCamera.GetComponent<Opponent>().FieldTransform.GetComponent<DropPlaceScriptNew>();
+        Drop.CardEntered += OnEnter;
+        Drop.CardLeft += OnLeave;
+    }
+
+    void OnEnter(object sender, DropPlaceScriptNew.DropEventArgs e)
+    {
+        if (e.fieldType != FieldType.SELF_FIELD)
+            return;
+        if (e.dropObject)
+            DefaultTempCardParent = e.dropField.transform;
+    }
+    void OnLeave(object sender, DropPlaceScriptNew.DropEventArgs e)
+    {
+        if (e.fieldType != FieldType.SELF_FIELD)
+            return;
+        if (e.dropObject && DefaultTempCardParent == e.dropField.transform)
+            DefaultTempCardParent = DefaultParent;
     }
 
     void Update()
@@ -34,7 +55,7 @@ public class CardMovement : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
     void CheckIfDraggable()
     {
-        IsDraggable = true;
+        _isDraggable = _cardNew.IsPlayable;
     }
     public void OnBeginDrag(PointerEventData eventData)
     {
@@ -46,7 +67,7 @@ public class CardMovement : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         offset = transform.position - MainCamera.ScreenToWorldPoint(eventData.position);
         DefaultParent = DefaultTempCardParent = transform.parent;
 
-        startID = transform.GetSiblingIndex();
+        _initialHandIndex = transform.GetSiblingIndex();
 
         //if (CC.Card.IsSpell || CC.Info.CanAttack)
         //    GameManagerScr.Instance.HighlightTargets(true, CC.Card);
@@ -61,11 +82,14 @@ public class CardMovement : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
     public void OnDrag(PointerEventData eventData)
     {
+        CheckIfDraggable();
         if (!IsDraggable)
             return;
+
         Vector3 newPos = MainCamera.ScreenToWorldPoint(eventData.position);
         transform.localRotation = Quaternion.Euler(0, 0, 0);
         transform.position = newPos + offset;
+
         if (TempCardGO.transform.parent != DefaultTempCardParent)
         {
             TempCardGO.transform.SetParent(DefaultTempCardParent);
@@ -96,26 +120,21 @@ public class CardMovement : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     void CheckPoisition()
     {
         int NewIndex = DefaultTempCardParent.childCount;
-
-        for (int i = 0; i < DefaultTempCardParent.childCount; i++)
-        {
-            if (transform.position.x < DefaultTempCardParent.GetChild(i).position.x)
+        if (TempCardGO.transform.parent == DefaultParent) NewIndex = _initialHandIndex;
+        else
+            for (int i = 0; i < DefaultTempCardParent.childCount; i++)
             {
-                NewIndex = i;
-
-                if (TempCardGO.transform.GetSiblingIndex() < NewIndex)
+                if (transform.position.x < DefaultTempCardParent.GetChild(i).position.x)
                 {
-                    NewIndex--;
+                    NewIndex = i;
+                    /*
+                    if (TempCardGO.transform.GetSiblingIndex() < NewIndex)
+                        NewIndex--;
+                    */
+                    break;
                 }
-
-                break;
             }
-        }
-
-        if (TempCardGO.transform.parent == DefaultParent) NewIndex = startID;
-
         TempCardGO.transform.SetSiblingIndex(NewIndex);
-
     }
 
     public void MoveToField(Transform field)

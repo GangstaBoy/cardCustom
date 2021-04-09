@@ -16,43 +16,33 @@ public enum FieldType
 */
 public class DropPlaceScriptNew : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
 {
-    public class CardDroppedEventArgs : EventArgs
+    public class DropEventArgs : EventArgs
     {
-        public GameObject droppedObject;
+        public GameObject dropObject;
+        public GameObject dropField;
+        public FieldType fieldType;
     }
-    public event EventHandler<CardDroppedEventArgs> CardDropped;
+    public event EventHandler<DropEventArgs> CardDropped;
+    public event EventHandler<DropEventArgs> CardEntered;
+    public event EventHandler<DropEventArgs> CardLeft;
     public FieldType type;
-    private int _rotation;
     public void OnDrop(PointerEventData eventData)
     {
-        if (type != FieldType.SELF_FIELD)
-            return;
-
-        CardMovement card = eventData.pointerDrag.GetComponent<CardMovement>();
-        card.DefaultParent = transform;
-        CardDropped?.Invoke(this.gameObject, new CardDroppedEventArgs { droppedObject = card.gameObject });
+        GameObject draggable = eventData.pointerDrag;
+        CardDropped?.Invoke(this.gameObject, new DropEventArgs { dropObject = draggable, dropField = this.gameObject, fieldType = this.type });
     }
-
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (eventData.pointerDrag == null || type == FieldType.ENEMY_HAND || type == FieldType.ENEMY_FIELD || type == FieldType.SELF_HAND)
+        if (eventData.pointerDrag == null)
             return;
-
-        CardMovement card = eventData.pointerDrag.GetComponent<CardMovement>();
-
-        if (card)
-            card.DefaultTempCardParent = transform;
+        GameObject draggable = eventData.pointerDrag;
+        CardEntered?.Invoke(this.gameObject, new DropEventArgs { dropObject = draggable, dropField = this.gameObject, fieldType = this.type });
     }
-
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (eventData.pointerDrag == null || type == FieldType.ENEMY_HAND || type == FieldType.ENEMY_FIELD || type == FieldType.SELF_HAND)
+        if (eventData.pointerDrag == null)
             return;
-
-        CardMovement card = eventData.pointerDrag.GetComponent<CardMovement>();
-
-        if (card && card.DefaultTempCardParent == transform)
-            card.DefaultTempCardParent = card.DefaultParent;
-
+        GameObject draggable = eventData.pointerDrag;
+        CardLeft?.Invoke(this.gameObject, new DropEventArgs { dropObject = draggable, dropField = this.gameObject, fieldType = this.type });
     }
 }

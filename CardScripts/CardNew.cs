@@ -3,20 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public interface ICard
-{
-    bool isPlayable { get; }
-    void Play();
-}
 
 public class CardNew : MonoBehaviour, IPointerClickHandler
 {
     public Opponent Owner { get => _player; }
+    public CardDisplay CardDisplay { get => _cardDisplay; }
+    public DropPlaceScriptNew Drop;
+    public CardMovement Movement { get => _movement; }
+    public bool IsPlayable { get => _isPlayable; }
     private CardSO _cardSO;
     private Opponent _player;
     [SerializeField] private CardDisplay _cardDisplay;
-    private ICard _card;
-    public DropPlaceScriptNew Drop;
+    [SerializeField] private CardMovement _movement;
+    private bool _isPlayable = true;
+
 
     void Start()
     {
@@ -29,28 +29,22 @@ public class CardNew : MonoBehaviour, IPointerClickHandler
     {
         _cardSO = card;
         _player = player;
-        _cardDisplay.Initialize(_cardSO);
-        if (_cardSO.Type == CardSO.CardType.CREATURE) _card = new CreatureCard(this);
-        if (_cardSO.Type == CardSO.CardType.SPELL) _card = new SpellCardNew();
+        CardDisplay.Initialize(_cardSO);
     }
 
-    private void OnDrop(object sender, DropPlaceScriptNew.CardDroppedEventArgs e)
+    private void OnDrop(object sender, DropPlaceScriptNew.DropEventArgs e)
     {
-        if (e.droppedObject == this.gameObject)
+        if (e.dropObject == this.gameObject && IsPlayable && e.fieldType == FieldType.SELF_FIELD)
         {
+            this.Movement.DefaultParent = e.dropField.transform;
             Play();
         }
-    }
-    public void ShowCard()
-    {
-        _cardDisplay.ShowCard();
     }
 
     public void Play()
     {
-        if (_card.isPlayable)
+        if (true)
         {
-            _card.Play();
             Drop.CardDropped -= OnDrop;
             //Destroy(gameObject, 0.01f);
         }
@@ -59,6 +53,7 @@ public class CardNew : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
+
         Play();
     }
 }

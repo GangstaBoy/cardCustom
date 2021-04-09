@@ -32,7 +32,7 @@ public class Opponent : MonoBehaviour
         }
         foreach (var item in _hand)
         {
-            item.ShowCard();
+            item.CardDisplay.ShowCard();
         }
     }
 }

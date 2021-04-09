@@ -5,23 +5,20 @@ using UnityEngine;
 public class DeckBehavior : MonoBehaviour
 {
     private List<CardSO> _deck = new List<CardSO>();
+    private CardSO[] _cards;
 
     private void RandomizeDeck()
     {
+
         for (int i = 0; i < 10; i++)
         {
-            _deck.Add(Resources.Load<CardSO>("CardObjects/Wolf"));
+            _deck.Add(_cards[Random.Range(0, _cards.Length)]);
         }
-        /*
-        _deck.Add(Resources.Load<CardSO>("CardObjects/Peasant"));
-        _deck.Add(Resources.Load<CardSO>("CardObjects/Wolf"));
-        _deck.Add(Resources.Load<CardSO>("CardObjects/Magic Sparks"));
-        _deck.Add(Resources.Load<CardSO>("CardObjects/Magic Sparks"));
-        */
     }
 
     private void Awake()
     {
+        _cards = Resources.LoadAll<CardSO>("CardObjects");
         RandomizeDeck();
     }
 
