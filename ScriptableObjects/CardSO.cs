@@ -16,6 +16,7 @@ public class CardSO : ScriptableObject
     [SerializeField] private List<CardAbilitySO> _abilities;
     [SerializeField] private CardType _type;
 
+
     public string Name { get => _name; }
     public string Description { get => _description; }
     public int Attack { get => _attack; }
