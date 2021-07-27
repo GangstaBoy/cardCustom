@@ -5,8 +5,7 @@ using UnityEngine;
 public class EnemyAI : MonoBehaviour
 {
     [SerializeField] private BattleController _battleController;
-    [SerializeField] private EnemyInstance _enemyInstance;
-    [SerializeField] private PlayerInstance _playerInstance;
+    [SerializeField] private PlayerInstance _enemyInstance, _playerInstance;
 
     public static event System.EventHandler EnemyTurnEnded;
     public static event System.EventHandler EnemyTurnStarted;

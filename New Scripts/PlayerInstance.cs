@@ -3,29 +3,48 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+public enum OpponentType
+{
+    PLAYER,
+    ENEMY
+}
+
 public class PlayerInstance : MonoBehaviour
 {
-    [SerializeField] private PlayerUI playerUI;
+    public static event System.EventHandler<PlayerDiedArgs> PlayerDied;
+    public class PlayerDiedArgs : System.EventArgs
+    {
+        public PlayerInstance diedInstance;
+    }
+    private OpponentType _opponentType;
     private BattleController _battleController;
     private bool _instantiated = false;
     private int _health, _stamina, _mana, _maxStamina;
-    private int _cardsDrawPerTurn;
-
     public int Health { get => _health; }
     public int Stamina { get => _stamina; }
     public int Mana { get => _mana; }
-    public int CardsDrawPerTurn { get => _cardsDrawPerTurn; }
     public int MaxStamina { get => _maxStamina; }
+    public OpponentType OpponentType { get => _opponentType; }
 
-    public void Instantiate(int health, int mana, int stamina, BattleController battleController, int cardsDrawPerTurn = 3)
+    public void Instantiate(BattleController battleController, OpponentType opponentType, int health, int mana, int stamina)
     {
-        if (_instantiated) return;
+        //if (_instantiated) return;
+        this._opponentType = opponentType;
         this._battleController = battleController;
         this._instantiated = true;
         this._health = health;
         this._mana = mana;
         this._stamina = this._maxStamina = stamina;
-        this._cardsDrawPerTurn = cardsDrawPerTurn;
+    }
+    public void Instantiate(BattleController battleController, OpponentType opponentType, EnemySO enemySO)
+    {
+        //if (_instantiated) return;
+        this._opponentType = opponentType;
+        this._battleController = battleController;
+        this._instantiated = true;
+        this._health = enemySO.Health;
+        this._mana = enemySO.Mana;
+        this._stamina = this._maxStamina = enemySO.Stamina;
     }
 
     public void getDamage(int damage, string type)
@@ -33,8 +52,11 @@ public class PlayerInstance : MonoBehaviour
         if (damage > 0)
         {
             _health -= damage;
-            if (Health <= 0) Destroy(this.gameObject);
-            else playerUI.UpdateHealth(Health);
+            if (Health <= 0)
+            {
+                //Destroy(this.gameObject);
+                if (PlayerDied != null) PlayerDied.Invoke(this, new PlayerDiedArgs { diedInstance = this });
+            }
         }
     }
 

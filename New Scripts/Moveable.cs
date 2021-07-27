@@ -5,8 +5,13 @@ using UnityEngine.EventSystems;
 using DG.Tweening;
 using UnityEngine.UI;
 
-public class Moveable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class Moveable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
 {
+    public static event System.EventHandler<CardDiscardedArgs> CardDiscarded;
+    public class CardDiscardedArgs : System.EventArgs
+    {
+        public GameObject card;
+    }
     Camera MainCamera;
     Vector3 offset; // stores distance between center and click place
     public Transform DefaultParent, DefaultTempCardParent;
@@ -47,5 +52,14 @@ public class Moveable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         GetComponent<CanvasGroup>().blocksRaycasts = true;
         //transform.SetSiblingIndex(TempCardGO.transform.GetSiblingIndex());
 
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (eventData.button == PointerEventData.InputButton.Right)
+        {
+            Debug.Log("Right Mouse Button Clicked on: " + name);
+            CardDiscarded.Invoke(this, new CardDiscardedArgs { card = this.gameObject });
+        }
     }
 }

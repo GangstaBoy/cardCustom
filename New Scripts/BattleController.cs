@@ -9,26 +9,30 @@ using UnityEngine.EventSystems;
 
 public class BattleController : MonoBehaviour
 {
+    public Deck playerDeck;
+    public Hand playerHand;
     public static event System.EventHandler PlayerTurnEnded;
     public EnemyAI enemyAI;
-    public EnemyUI enemyUI;
-    public PlayerUI playerUI;
-    [SerializeField] private EnemyInstance _enemyInstance;
-    [SerializeField] private PlayerInstance _playerInstance;
+    public PlayerUIController playerUI, enemyUI;
+    [SerializeField] private PlayerInstance _enemyInstance, _playerInstance;
     private EnemySO[] _enemies;
     private GameCardSO[] _cards;
-    [SerializeField] private GameObject cardPrefab;
+    [SerializeField] private GameObject cardPrefab, statePrefab, playerBuffZone, enemyBuffZone;
     [SerializeField] private Transform _handTransform;
 
 
     void OnEnable()
     {
+        Moveable.CardDiscarded += DiscardCard;
         Drop.CardDropEvent += PlayCard;
+        PlayerInstance.PlayerDied += ProcessDeath;
         EnemyAI.EnemyTurnEnded += StartTurn;
     }
     void OnDisable()
     {
+        Moveable.CardDiscarded -= DiscardCard;
         Drop.CardDropEvent -= PlayCard;
+        PlayerInstance.PlayerDied -= ProcessDeath;
         EnemyAI.EnemyTurnEnded -= StartTurn;
     }
 
@@ -42,15 +46,37 @@ public class BattleController : MonoBehaviour
         return _cards.Length == 0 ? null : _cards[Random.Range(0, _cards.Length)];
     }
 
+    public void ProcessDeath(object sender, PlayerInstance.PlayerDiedArgs eventArgs)
+    {
+        Debug.Log("Died! " + eventArgs.diedInstance.gameObject + " " + eventArgs.diedInstance.name);
+        Test();
+    }
+
+    public void DiscardCard(object sender, Moveable.CardDiscardedArgs eventArgs)
+    {
+        playerHand.RemoveCard(eventArgs.card.GetComponent<CardInstance>());
+    }
+
     private void InstantiateCards(int cardsCount)
     {
         for (int i = 0; i < cardsCount; i++)
         {
-            GameCardSO cardSO = PickRandomCard();
-            if (cardSO == null) return;
-            var card = Object.Instantiate(cardPrefab, _handTransform);
-            card.GetComponent<CardUI>().Display(cardSO);
-            card.GetComponent<CardInstance>().Instantiate(cardSO, this);
+            Debug.Log("Can draw? " + playerHand.canDraw);
+            if (playerHand.canDraw)
+            {
+                GameCardSO cardSO = playerDeck.DrawCard();
+                if (cardSO == null)
+                {
+                    Debug.Log("Cards over!");       //todo: start reshuffle
+                    playerDeck.RandomizeDeck();
+                    cardSO = playerDeck.DrawCard();
+                }
+                var card = Object.Instantiate(cardPrefab, _handTransform);
+                card.GetComponent<CardUI>().Display(cardSO);
+                var cardInstance = card.GetComponent<CardInstance>();
+                cardInstance.Instantiate(cardSO, this);
+                playerHand.AddCard(cardInstance);
+            }
         }
     }
 
@@ -65,25 +91,27 @@ public class BattleController : MonoBehaviour
             return;
         }
         ProcessCard(card);
+        playerHand.RemoveCard(card);
         Destroy(e.dropObject.gameObject);
+
+        void ProcessCard(CardInstance card)
+        {
+            _playerInstance.decreaseResources(card.Manacost, card.Staminacost);
+            for (int i = 0; i < card.СardEffectSOs.Length; i++)
+            {
+                ProcessCardEffect(card.СardEffectSOs[i]);
+            }
+        }
     }
 
     private void Awake()
     {
         _enemies = Resources.LoadAll<EnemySO>("Characters/Enemies");
-        _cards = Resources.LoadAll<GameCardSO>("GameCardObjects");
-
+        //_cards = Resources.LoadAll<GameCardSO>("GameCardObjects");
         Test();
     }
 
-    private void ProcessCard(CardInstance card)
-    {
-        _playerInstance.decreaseResources(card.Manacost, card.Staminacost);
-        for (int i = 0; i < card.СardEffectSOs.Length; i++)
-        {
-            ProcessCardEffect(card.СardEffectSOs[i]);
-        }
-    }
+
 
     private void ProcessCardEffect(CardEffectSO cardEffect)
     {
@@ -111,6 +139,13 @@ public class BattleController : MonoBehaviour
                     break;
                 }
 
+            case CardEffectType.REDUCE_LIFE:
+                {
+                    int reduceValue = int.Parse(System.Array.Find<EffectValues>(cardEffect.EffectValues, p => p.key == "VALUE").value);
+                    _enemyInstance.getDamage(_enemyInstance.Health - 1, "PURE");
+                    break;
+                }
+
             default: break;
         }
     }
@@ -123,17 +158,17 @@ public class BattleController : MonoBehaviour
 
     private void StartTurn(object sender, System.EventArgs eventArgs)
     {
-        InstantiateCards(_playerInstance.CardsDrawPerTurn);
+        InstantiateCards(playerHand.maxHandSize);
         _playerInstance.refreshStamina();
     }
 
     private void Test()
     {
         var enemy = PickRandomEnemy();
-        _enemyInstance.Instantiate(enemy, this);
-        enemyUI.Display(enemy, _enemyInstance);
-        _playerInstance.Instantiate(30, 10, 10, this);
-        playerUI.playerInstance = _playerInstance;
-        InstantiateCards(_playerInstance.CardsDrawPerTurn);
+        _enemyInstance.Instantiate(this, OpponentType.ENEMY, enemy);
+        enemyUI.Instantiate(_enemyInstance, enemy);
+        _playerInstance.Instantiate(this, OpponentType.PLAYER, 30, 10, 10);
+        playerUI.Instantiate(_playerInstance);
+        InstantiateCards(playerHand.maxHandSize);
     }
 }
